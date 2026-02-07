@@ -3,183 +3,192 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Premium Dream Cake</title>
+    <title>Premium Aesthetic Cake</title>
     <style>
         :root {
-            --cake-color: #4b2c20; /* Насыщенный шоколад */
-            --cream-color: #fffafa; /* Сливочный крем */
+            --cake-main: #3d2b1f; /* Глубокий шоколад */
+            --cream: #ffffff;
             --gold: #d4a373;
         }
 
         body {
-            background: #050505;
+            background: radial-gradient(circle at center, #1a1a1a 0%, #050505 100%);
             margin: 0; height: 100vh;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            font-family: 'serif'; overflow: hidden;
+            overflow: hidden; font-family: 'Georgia', serif;
         }
 
-        /* Кнопка в стиле "Кино" */
+        /* Кнопка старта */
         #start-btn {
-            padding: 15px 40px; background: none; border: 1px solid var(--gold);
-            color: var(--gold); letter-spacing: 4px; cursor: pointer;
-            text-transform: uppercase; z-index: 100;
+            padding: 18px 45px; background: none; border: 1px solid var(--gold);
+            color: var(--gold); letter-spacing: 5px; cursor: pointer;
+            text-transform: uppercase; z-index: 100; transition: 0.4s;
         }
 
-        /* Сцена с тортом */
-        .cake-stage {
-            position: relative; width: 300px; height: 400px;
+        /* Сцена торта */
+        .stage {
+            position: relative; width: 320px; height: 400px;
             display: none; flex-direction: column-reverse; align-items: center;
         }
 
-        /* Объемный цилиндрический корж */
+        /* Стилизация объемного слоя */
         .layer {
-            width: 240px; height: 80px;
-            background: var(--cake-color);
-            border-radius: 120px / 30px; /* Эффект 3D овала */
-            position: relative; margin-bottom: -40px;
-            box-shadow: inset 0 -20px 40px rgba(0,0,0,0.7), 0 15px 25px rgba(0,0,0,0.5);
-            transform: translateY(-800px); opacity: 0;
+            width: 240px; height: 90px;
+            background: linear-gradient(180deg, #4e3629 0%, var(--cake-main) 100%);
+            border-radius: 120px / 35px;
+            position: relative; margin-bottom: -50px;
+            box-shadow: inset 0 -15px 30px rgba(0,0,0,0.6), 0 20px 40px rgba(0,0,0,0.8);
+            opacity: 0; transform: translateY(-700px) scale(1.1);
             z-index: 1;
         }
 
-        /* Верхняя грань коржа (дает объем) */
-        .layer::after {
-            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 40px;
+        /* Глянец на корже */
+        .layer::before {
+            content: ''; position: absolute; top: 0; left: 10%; width: 80%; height: 30px;
             background: rgba(255,255,255,0.05); border-radius: 50%;
         }
 
-        /* Крем с "подтеками" */
-        .cream-flow {
-            width: 250px; height: 40px; background: var(--cream-color);
-            border-radius: 125px / 20px; z-index: 5; margin-bottom: -25px;
-            transform: scale(0); opacity: 0;
-            filter: drop-shadow(0 8px 10px rgba(0,0,0,0.4));
+        /* Крем с мягкими краями */
+        .cream-wrap {
+            width: 250px; height: 45px;
+            background: radial-gradient(ellipse at center, #fff 0%, #f0f0f0 100%);
+            border-radius: 125px / 20px;
+            z-index: 5; margin-bottom: -35px;
+            opacity: 0; transform: scale(0);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
         }
 
-        /* Анимация падения с пружиной */
-        .animate-fall { animation: bounceIn 1.2s cubic-bezier(0.47, 0, 0.745, 0.715) forwards; }
-        .animate-cream { animation: creamPop 0.8s ease-out forwards; }
-
-        @keyframes bounceIn {
-            to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes creamPop {
-            to { opacity: 1; transform: scale(1); }
-        }
-
-        /* Свеча и Магическое пламя */
+        /* Свеча */
         .candle {
-            width: 10px; height: 70px; 
-            background: linear-gradient(to bottom, #fff, #ddd);
-            position: relative; z-index: 20; opacity: 0; margin-bottom: 20px;
-            box-shadow: 0 0 10px rgba(255,255,255,0.2);
+            width: 8px; height: 80px;
+            background: linear-gradient(to bottom, #fff, var(--gold));
+            position: relative; z-index: 20; opacity: 0; margin-bottom: 25px;
+            box-shadow: 0 0 15px rgba(255,255,255,0.2);
         }
 
         .flame {
-            width: 20px; height: 35px; background: #ff9800;
-            border-radius: 50% 50% 20% 20%; position: absolute; top: -45px; left: -5px;
-            box-shadow: 0 0 25px #ff5722, 0 0 50px #ffeb3b, 0 0 80px rgba(255,165,0,0.4);
-            animation: move 0.1s infinite alternate;
+            width: 22px; height: 38px; background: #ff9800;
+            border-radius: 50% 50% 20% 20%; position: absolute; top: -45px; left: -7px;
+            box-shadow: 0 0 30px #ff5722, 0 0 60px #ffeb3b, 0 0 100px rgba(255,165,0,0.5);
+            animation: flicker 0.1s infinite alternate;
         }
 
-        /* Круг-индикатор дыхания */
-        #breath-ring {
-            position: absolute; width: 60px; height: 60px;
-            border: 2px solid var(--gold); border-radius: 50%;
-            top: -60px; left: -25px; opacity: 0; transition: 0.1s;
+        /* Индикатор дыхания */
+        #mic-halo {
+            position: absolute; width: 70px; height: 70px;
+            border: 1px solid var(--gold); border-radius: 50%;
+            top: -65px; left: -31px; opacity: 0; transition: 0.1s;
         }
 
-        @keyframes move {
-            from { transform: scale(1) rotate(-2deg); }
-            to { transform: scale(1.1) rotate(2deg); }
+        @keyframes flicker {
+            from { transform: scale(1) rotate(-1deg); filter: brightness(1); }
+            to { transform: scale(1.1) rotate(1deg); filter: brightness(1.2); }
         }
 
-        #hint-text {
-            color: var(--gold); margin-top: 50px; font-style: italic;
-            opacity: 0; transition: 1s; letter-spacing: 1.5px;
+        /* Анимации появления */
+        .anim-drop { animation: dropDown 1.4s cubic-bezier(0.175, 0.885, 0.32, 1.1) forwards; }
+        .anim-cream { animation: creamSpread 1s ease-out forwards; }
+
+        @keyframes dropDown {
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        @keyframes creamSpread {
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        #hint {
+            color: var(--gold); margin-top: 60px; font-style: italic;
+            opacity: 0; transition: 1.5s; text-align: center; font-size: 1.1rem;
         }
     </style>
 </head>
 <body>
 
-    <button id="start-btn">Открыть подарок</button>
+    <button id="start-btn">Принять подарок</button>
 
-    <div class="cake-stage" id="stage">
+    <div class="stage" id="stage">
         <div class="layer" id="l1"></div>
-        <div class="cream-flow" id="c1"></div>
-        <div class="layer" id="l2" style="width: 190px;"></div>
-        <div class="cream-flow" id="c2" style="width: 200px;"></div>
-        <div class="layer" id="l3" style="width: 140px;"></div>
+        <div class="cream-wrap" id="c1"></div>
+        <div class="layer" id="l2" style="width: 200px; height: 75px;"></div>
+        <div class="cream-wrap" id="c2" style="width: 210px;"></div>
+        <div class="layer" id="l3" style="width: 150px; height: 60px;"></div>
         
         <div class="candle" id="candle">
-            <div id="breath-ring"></div>
+            <div id="mic-halo"></div>
             <div class="flame" id="flame"></div>
         </div>
     </div>
 
-    <p id="hint-text">Загадай самое заветное...</p>
+    <p id="hint">Загадай желание...</p>
 
     <script>
         const btn = document.getElementById('start-btn');
         const stage = document.getElementById('stage');
-        const hint = document.getElementById('hint-text');
-        const ring = document.getElementById('breath-ring');
+        const hint = document.getElementById('hint');
         const flame = document.getElementById('flame');
+        const halo = document.getElementById('mic-halo');
 
-        btn.onclick = () => {
+        btn.onclick = async () => {
             btn.style.display = 'none';
             stage.style.display = 'flex';
             
+            // Инициализация аудио заранее (фикс первого раза)
+            const tempCtx = new (window.AudioContext || window.webkitAudioContext)();
+            await tempCtx.resume();
+
             const steps = [
-                {id: 'l1', anim: 'animate-fall', d: 500},
-                {id: 'c1', anim: 'animate-cream', d: 1500},
-                {id: 'l2', anim: 'animate-fall', d: 2500},
-                {id: 'c2', anim: 'animate-cream', d: 3500},
-                {id: 'l3', anim: 'animate-fall', d: 4500}
+                {id: 'l1', type: 'anim-drop', d: 500},
+                {id: 'c1', type: 'anim-cream', d: 1800},
+                {id: 'l2', type: 'anim-drop', d: 2800},
+                {id: 'c2', type: 'anim-cream', d: 3800},
+                {id: 'l3', type: 'anim-drop', d: 4800}
             ];
 
             steps.forEach(s => {
-                setTimeout(() => document.getElementById(s.id).classList.add(s.anim), s.d);
+                setTimeout(() => document.getElementById(s.id).classList.add(s.type), s.d);
             });
 
             setTimeout(() => {
                 document.getElementById('candle').style.opacity = '1';
                 hint.style.opacity = '1';
-                hint.innerText = "Дуй на свечу, чтобы желание сбылось";
-                initMic();
-            }, 6000);
+                hint.innerText = "Дуй мягко на свечу...";
+                startListening(tempCtx);
+            }, 6500);
         };
 
-        async function initMic() {
+        async function startListening(ctx) {
             try {
                 const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                const ctx = new AudioContext();
-                const analyzer = ctx.createAnalyser();
+                const analyser = ctx.createAnalyser();
                 const source = ctx.createMediaStreamSource(stream);
-                source.connect(analyzer);
-                const data = new Uint8Array(analyzer.frequencyBinCount);
+                source.connect(analyser);
+                analyser.fftSize = 256;
+                const data = new Uint8Array(analyser.frequencyBinCount);
 
-                function loop() {
-                    analyzer.getByteFrequencyData(data);
-                    let vol = data.reduce((a,b) => a+b) / data.length;
-                    
-                    // Индикатор реагирует на голос/дуновение
-                    ring.style.opacity = vol / 50;
-                    ring.style.transform = `scale(${0.5 + vol/40})`;
+                function detect() {
+                    analyser.getByteFrequencyData(data);
+                    let sum = 0;
+                    for(let i=0; i<data.length; i++) sum += data[i];
+                    let vol = sum / data.length;
 
-                    if (vol > 50) { 
+                    // Индикатор (стал чувствительнее)
+                    halo.style.opacity = vol / 40;
+                    halo.style.transform = `scale(${0.4 + vol/30})`;
+
+                    // Порог снижен до 35 (было 55) - теперь легче дуть
+                    if (vol > 35) { 
                         flame.style.display = 'none';
-                        ring.style.display = 'none';
-                        hint.innerText = "Пусть всё сбудется ✨";
+                        halo.style.display = 'none';
+                        hint.innerText = "Твоё желание услышано ✨";
                         stream.getTracks().forEach(t => t.stop());
                     } else {
-                        requestAnimationFrame(loop);
+                        requestAnimationFrame(detect);
                     }
                 }
-                loop();
+                detect();
             } catch (e) {
-                hint.innerText = "Микрофон не активен, нажми на свечу";
-                flame.onclick = () => { flame.style.display = 'none'; hint.innerText = "Пусть всё сбудется ✨"; };
+                hint.innerText = "Коснись пламени...";
+                flame.onclick = () => { flame.style.display = 'none'; hint.innerText = "Всё сбудется ✨"; };
             }
         }
     </script>
