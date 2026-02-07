@@ -3,130 +3,213 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Тест Торта</title>
+    <title>Aesthetic Test</title>
     <style>
+        :root {
+            --bg-color: #121212;
+            --accent-color: #d4a373; /* Цвет шампань/песок */
+            --text-color: #e0e0e0;
+        }
+
         body {
-            background: #1a1a1a;
-            color: white;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
+            background-color: var(--bg-color);
+            color: var(--text-color);
             margin: 0;
-            font-family: sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: 'serif';
             overflow: hidden;
+            position: relative;
         }
 
-        /* Анимация сборки торта */
-        .cake { position: relative; width: 200px; height: 150px; display: none; }
-        .layer {
-            width: 100%; height: 40px;
-            background: #ffc0cb; border-radius: 10px;
-            position: absolute; bottom: 0;
-            animation: fallIn 0.8s ease forwards;
-        }
-        .layer-2 { bottom: 45px; background: #ffb6c1; animation-delay: 0.5s; opacity: 0; }
-        .layer-3 { bottom: 90px; background: #ff69b4; animation-delay: 1s; opacity: 0; }
-
-        @keyframes fallIn {
-            from { transform: translateY(-500px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
+        /* Эффект зернистости пленки */
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: url('https://upload.wikimedia.org/wikipedia/commons/7/76/1k_Grain.jpg');
+            opacity: 0.04;
+            pointer-events: none;
+            z-index: 10;
         }
 
-        /* Свеча и огонь */
-        .candle {
-            width: 10px; height: 30px; background: white;
-            position: absolute; top: 60px; left: 95px;
+        #intro-screen {
+            text-align: center;
+            z-index: 20;
+        }
+
+        button {
+            background: none;
+            border: 1px solid var(--accent-color);
+            color: var(--accent-color);
+            padding: 15px 40px;
+            font-size: 1rem;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: all 0.5s ease;
+            text-transform: uppercase;
+        }
+
+        button:hover {
+            background: var(--accent-color);
+            color: white;
+            box-shadow: 0 0 20px rgba(212, 163, 115, 0.4);
+        }
+
+        /* Контейнер торта */
+        #cake-container {
             display: none;
+            text-align: center;
+            animation: fadeIn 3s ease;
         }
+
+        .cake-silhouette {
+            width: 180px;
+            height: 120px;
+            background: linear-gradient(to bottom, #2a2a2a, #1a1a1a);
+            border-radius: 10px 10px 5px 5px;
+            position: relative;
+            margin: 0 auto;
+            box-shadow: 0 0 50px rgba(0,0,0,0.5);
+        }
+
+        /* Эстетичная свеча */
+        .candle {
+            width: 4px;
+            height: 40px;
+            background: var(--accent-color);
+            margin: -40px auto 0;
+            position: relative;
+            opacity: 0;
+            transition: opacity 2s ease;
+        }
+
         .flame {
-            width: 15px; height: 20px; background: orange;
+            width: 12px;
+            height: 18px;
+            background: #ffdbac;
             border-radius: 50% 50% 20% 20%;
-            position: absolute; top: -25px; left: -2.5px;
+            position: absolute;
+            top: -22px;
+            left: -4px;
+            filter: blur(1px);
+            box-shadow: 0 0 15px #f5a623, 0 0 30px #f5a623;
             animation: flicker 0.1s infinite alternate;
         }
 
         @keyframes flicker {
-            from { transform: scale(1); box-shadow: 0 0 10px orange; }
-            to { transform: scale(1.1); box-shadow: 0 0 20px yellow; }
+            from { transform: scale(1) rotate(-1deg); opacity: 0.8; }
+            to { transform: scale(1.1) rotate(1deg); opacity: 1; }
         }
 
-        #status { margin-top: 20px; font-size: 1.2rem; color: #ff69b4; text-align: center; }
-        button {
-            padding: 15px 30px; font-size: 1rem; border-radius: 25px;
-            border: none; background: #ff69b4; color: white; cursor: pointer;
+        @keyframes fadeIn {
+            from { opacity: 0; filter: blur(10px); }
+            to { opacity: 1; filter: blur(0); }
+        }
+
+        /* Индикатор микрофона (для теста) */
+        #mic-indicator {
+            position: fixed;
+            bottom: 20px;
+            width: 100px;
+            height: 2px;
+            background: #333;
+            left: 50%;
+            transform: translateX(-50%);
+            overflow: hidden;
+            display: none;
+        }
+        #mic-bar {
+            height: 100%;
+            width: 0%;
+            background: var(--accent-color);
+            transition: width 0.1s;
+        }
+
+        .instruction {
+            margin-top: 40px;
+            font-style: italic;
+            opacity: 0.6;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
         }
     </style>
 </head>
 <body>
 
-    <button id="startBtn">Начать магию</button>
-    
-    <div class="cake" id="cake">
-        <div class="layer layer-1"></div>
-        <div class="layer layer-2"></div>
-        <div class="layer layer-3"></div>
-        <div class="candle" id="candle"><div class="flame" id="flame"></div></div>
+    <div id="intro-screen">
+        <button id="startBtn">Войти в момент</button>
     </div>
 
-    <div id="status"></div>
+    <div id="cake-container">
+        <div class="cake-silhouette"></div>
+        <div class="candle" id="candle">
+            <div class="flame" id="flame"></div>
+        </div>
+        <p class="instruction" id="statusText">Загадай желание...</p>
+    </div>
+
+    <div id="mic-indicator"><div id="mic-bar"></div></div>
 
     <script>
         const startBtn = document.getElementById('startBtn');
-        const cake = document.getElementById('cake');
+        const intro = document.getElementById('intro-screen');
+        const cakeBox = document.getElementById('cake-container');
         const candle = document.getElementById('candle');
         const flame = document.getElementById('flame');
-        const status = document.getElementById('status');
+        const micBar = document.getElementById('mic-bar');
+        const statusText = document.getElementById('statusText');
 
         startBtn.onclick = async () => {
-            startBtn.style.display = 'none';
-            cake.style.display = 'block';
-            
-            // Ждем завершения анимации сборки
+            intro.style.display = 'none';
+            cakeBox.style.display = 'block';
+            document.getElementById('mic-indicator').style.display = 'block';
+
             setTimeout(() => {
-                candle.style.display = 'block';
-                status.innerText = 'Загадай желание и дуй!';
-                initMic();
-            }, 1800);
+                candle.style.opacity = '1';
+                initAudio();
+            }, 1000);
         };
 
-        async function initMic() {
+        async function initAudio() {
             try {
                 const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
                 const audioContext = new (window.AudioContext || window.webkitAudioContext)();
                 const analyser = audioContext.createAnalyser();
-                const microphone = audioContext.createMediaStreamSource(stream);
-                microphone.connect(analyser);
+                const source = audioContext.createMediaStreamSource(stream);
+                source.connect(analyser);
                 analyser.fftSize = 256;
-                const bufferLength = analyser.frequencyBinCount;
-                const dataArray = new Uint8Array(bufferLength);
+                const dataArray = new Uint8Array(analyser.frequencyBinCount);
 
-                function checkBlow() {
+                function detect() {
                     analyser.getByteFrequencyData(dataArray);
-                    let sum = 0;
-                    for(let i = 0; i < bufferLength; i++) sum += dataArray[i];
-                    let average = sum / bufferLength;
+                    let values = 0;
+                    for (let i = 0; i < dataArray.length; i++) values += dataArray[i];
+                    let average = values / dataArray.length;
 
-                    if (average > 60) { // Порог шума (дуновения)
+                    // Визуализация для теста
+                    micBar.style.width = Math.min(average * 2, 100) + '%';
+
+                    if (average > 50) { // Порог дуновения
                         flame.style.display = 'none';
-                        status.innerText = '✨ Желание принято! ✨';
-                        // Останавливаем микрофон после успеха
-                        stream.getTracks().forEach(track => track.stop());
+                        statusText.innerText = "Оно обязательно сбудется.";
+                        statusText.style.color = "#d4a373";
+                        stream.getTracks().forEach(t => t.stop());
                         return;
                     }
-                    requestAnimationFrame(checkBlow);
+                    requestAnimationFrame(detect);
                 }
-                checkBlow();
+                detect();
             } catch (err) {
-                status.innerText = 'Микрофон не доступен, просто нажми на свечу!';
+                statusText.innerText = "Микрофон заблокирован. Тапни по свече.";
                 candle.onclick = () => {
                     flame.style.display = 'none';
-                    status.innerText = '✨ Желание принято! ✨';
+                    statusText.innerText = "Оно обязательно сбудется.";
                 };
             }
         }
     </script>
 </body>
 </html>
-
