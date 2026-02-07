@@ -3,191 +3,179 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Premium Aesthetic Cake</title>
+    <title>Dreamy Film Cake</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <style>
         :root {
-            --cake-main: #3d2b1f; /* Глубокий шоколад */
-            --cream: #ffffff;
+            --cake: #362218;
+            --cream: #fff9f0;
             --gold: #d4a373;
+            --flame: #ff8d00;
         }
 
         body {
-            background: radial-gradient(circle at center, #1a1a1a 0%, #050505 100%);
+            background: #0a0a0a;
             margin: 0; height: 100vh;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            overflow: hidden; font-family: 'Georgia', serif;
+            overflow: hidden; font-family: 'Playfair Display', serif;
         }
 
-        /* Кнопка старта */
+        /* Эффект кинопленки */
+        .film-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle, transparent 20%, rgba(0,0,0,0.8) 100%);
+            pointer-events: none; z-index: 50;
+        }
+
+        .grain {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: url('https://upload.wikimedia.org/wikipedia/commons/7/76/1k_Grain.jpg');
+            opacity: 0.03; pointer-events: none; z-index: 51; mix-blend-mode: overlay;
+        }
+
         #start-btn {
-            padding: 18px 45px; background: none; border: 1px solid var(--gold);
-            color: var(--gold); letter-spacing: 5px; cursor: pointer;
-            text-transform: uppercase; z-index: 100; transition: 0.4s;
+            z-index: 100; padding: 20px 50px; background: none;
+            border: 1px solid var(--gold); color: var(--gold);
+            letter-spacing: 5px; cursor: pointer; text-transform: uppercase;
+            transition: 0.5s; backdrop-filter: blur(5px);
         }
 
-        /* Сцена торта */
         .stage {
-            position: relative; width: 320px; height: 400px;
+            position: relative; width: 350px; height: 450px;
             display: none; flex-direction: column-reverse; align-items: center;
         }
 
-        /* Стилизация объемного слоя */
+        /* Объемный торт с текстурой */
         .layer {
-            width: 240px; height: 90px;
-            background: linear-gradient(180deg, #4e3629 0%, var(--cake-main) 100%);
-            border-radius: 120px / 35px;
-            position: relative; margin-bottom: -50px;
-            box-shadow: inset 0 -15px 30px rgba(0,0,0,0.6), 0 20px 40px rgba(0,0,0,0.8);
-            opacity: 0; transform: translateY(-700px) scale(1.1);
+            width: 260px; height: 90px;
+            background: linear-gradient(180deg, #4e3528 0%, var(--cake) 100%);
+            border-radius: 130px / 35px;
+            position: relative; margin-bottom: -45px;
+            box-shadow: inset 0 -20px 40px rgba(0,0,0,0.8), 0 30px 50px rgba(0,0,0,0.9);
             z-index: 1;
         }
 
-        /* Глянец на корже */
-        .layer::before {
-            content: ''; position: absolute; top: 0; left: 10%; width: 80%; height: 30px;
-            background: rgba(255,255,255,0.05); border-radius: 50%;
+        .layer::before { /* Световой блик сверху */
+            content: ''; position: absolute; top: 0; left: 5%; width: 90%; height: 35px;
+            background: rgba(255,255,255,0.03); border-radius: 50%;
         }
 
-        /* Крем с мягкими краями */
-        .cream-wrap {
-            width: 250px; height: 45px;
-            background: radial-gradient(ellipse at center, #fff 0%, #f0f0f0 100%);
-            border-radius: 125px / 20px;
-            z-index: 5; margin-bottom: -35px;
-            opacity: 0; transform: scale(0);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+        .cream {
+            width: 270px; height: 45px;
+            background: radial-gradient(circle at 50% 0%, #ffffff 0%, #f2e6d9 100%);
+            border-radius: 135px / 22px;
+            margin-bottom: -35px; z-index: 5;
+            filter: drop-shadow(0 10px 15px rgba(0,0,0,0.5));
         }
 
-        /* Свеча */
+        /* Свеча и магический огонь */
         .candle {
-            width: 8px; height: 80px;
+            width: 10px; height: 80px;
             background: linear-gradient(to bottom, #fff, var(--gold));
-            position: relative; z-index: 20; opacity: 0; margin-bottom: 25px;
-            box-shadow: 0 0 15px rgba(255,255,255,0.2);
+            position: relative; z-index: 10; margin-bottom: 25px;
+            border-radius: 2px; box-shadow: 0 0 20px rgba(255,255,255,0.1);
         }
 
-        .flame {
-            width: 22px; height: 38px; background: #ff9800;
+        .flame-core {
+            width: 24px; height: 40px; background: var(--flame);
             border-radius: 50% 50% 20% 20%; position: absolute; top: -45px; left: -7px;
-            box-shadow: 0 0 30px #ff5722, 0 0 60px #ffeb3b, 0 0 100px rgba(255,165,0,0.5);
-            animation: flicker 0.1s infinite alternate;
+            box-shadow: 0 0 40px var(--flame), 0 0 80px #ffea00;
+            filter: blur(1px);
         }
 
-        /* Индикатор дыхания */
-        #mic-halo {
-            position: absolute; width: 70px; height: 70px;
+        .mic-aura {
+            position: absolute; width: 80px; height: 80px;
             border: 1px solid var(--gold); border-radius: 50%;
-            top: -65px; left: -31px; opacity: 0; transition: 0.1s;
-        }
-
-        @keyframes flicker {
-            from { transform: scale(1) rotate(-1deg); filter: brightness(1); }
-            to { transform: scale(1.1) rotate(1deg); filter: brightness(1.2); }
-        }
-
-        /* Анимации появления */
-        .anim-drop { animation: dropDown 1.4s cubic-bezier(0.175, 0.885, 0.32, 1.1) forwards; }
-        .anim-cream { animation: creamSpread 1s ease-out forwards; }
-
-        @keyframes dropDown {
-            to { opacity: 1; transform: translateY(0) scale(1); }
-        }
-        @keyframes creamSpread {
-            to { opacity: 1; transform: scale(1); }
+            top: -65px; left: -35px; opacity: 0; pointer-events: none;
         }
 
         #hint {
             color: var(--gold); margin-top: 60px; font-style: italic;
-            opacity: 0; transition: 1.5s; text-align: center; font-size: 1.1rem;
+            opacity: 0; font-size: 1.1rem; text-align: center;
+            text-shadow: 0 0 10px rgba(212,163,115,0.5);
         }
     </style>
 </head>
 <body>
 
-    <button id="start-btn">Принять подарок</button>
+    <div class="film-overlay"></div>
+    <div class="grain"></div>
+
+    <button id="start-btn">Открыть подарок</button>
 
     <div class="stage" id="stage">
         <div class="layer" id="l1"></div>
-        <div class="cream-wrap" id="c1"></div>
-        <div class="layer" id="l2" style="width: 200px; height: 75px;"></div>
-        <div class="cream-wrap" id="c2" style="width: 210px;"></div>
-        <div class="layer" id="l3" style="width: 150px; height: 60px;"></div>
+        <div class="cream" id="c1"></div>
+        <div class="layer" id="l2" style="width: 200px;"></div>
+        <div class="cream" id="c2" style="width: 210px;"></div>
+        <div class="layer" id="l3" style="width: 140px;"></div>
         
-        <div class="candle" id="candle">
-            <div id="mic-halo"></div>
-            <div class="flame" id="flame"></div>
+        <div class="candle" id="candle" style="opacity: 0;">
+            <div class="mic-aura" id="aura"></div>
+            <div class="flame-core" id="flame"></div>
         </div>
     </div>
 
     <p id="hint">Загадай желание...</p>
 
     <script>
-        const btn = document.getElementById('start-btn');
+        const startBtn = document.getElementById('start-btn');
         const stage = document.getElementById('stage');
         const hint = document.getElementById('hint');
         const flame = document.getElementById('flame');
-        const halo = document.getElementById('mic-halo');
+        const aura = document.getElementById('aura');
 
-        btn.onclick = async () => {
-            btn.style.display = 'none';
-            stage.style.display = 'flex';
-            
-            // Инициализация аудио заранее (фикс первого раза)
-            const tempCtx = new (window.AudioContext || window.webkitAudioContext)();
-            await tempCtx.resume();
-
-            const steps = [
-                {id: 'l1', type: 'anim-drop', d: 500},
-                {id: 'c1', type: 'anim-cream', d: 1800},
-                {id: 'l2', type: 'anim-drop', d: 2800},
-                {id: 'c2', type: 'anim-cream', d: 3800},
-                {id: 'l3', type: 'anim-drop', d: 4800}
-            ];
-
-            steps.forEach(s => {
-                setTimeout(() => document.getElementById(s.id).classList.add(s.type), s.d);
-            });
-
-            setTimeout(() => {
-                document.getElementById('candle').style.opacity = '1';
-                hint.style.opacity = '1';
-                hint.innerText = "Дуй мягко на свечу...";
-                startListening(tempCtx);
-            }, 6500);
+        startBtn.onclick = () => {
+            gsap.to(startBtn, { opacity: 0, duration: 0.5, onComplete: () => {
+                startBtn.style.display = 'none';
+                stage.style.display = 'flex';
+                buildCake();
+            }});
         };
 
-        async function startListening(ctx) {
+        function buildCake() {
+            const tl = gsap.timeline();
+
+            // Анимация сборки через GSAP (плавно и мягко)
+            tl.fromTo("#l1", {y: -800, opacity: 0}, {y: 0, opacity: 1, duration: 1.5, ease: "bounce.out"})
+              .fromTo("#c1", {scale: 0, opacity: 0}, {scale: 1, opacity: 1, duration: 0.8}, "-=0.5")
+              .fromTo("#l2", {y: -600, opacity: 0}, {y: 0, opacity: 1, duration: 1.2, ease: "power2.out"}, "-=0.2")
+              .fromTo("#c2", {scale: 0, opacity: 0}, {scale: 1, opacity: 1, duration: 0.8}, "-=0.4")
+              .fromTo("#l3", {y: -400, opacity: 0}, {y: 0, opacity: 1, duration: 1, ease: "power2.out"}, "-=0.2")
+              .to("#candle", {opacity: 1, duration: 1.5, onComplete: startMic});
+
+            gsap.to(hint, {opacity: 1, duration: 2, delay: 5});
+        }
+
+        async function startMic() {
             try {
                 const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                const analyser = ctx.createAnalyser();
+                const ctx = new AudioContext();
+                const analyzer = ctx.createAnalyser();
                 const source = ctx.createMediaStreamSource(stream);
-                source.connect(analyser);
-                analyser.fftSize = 256;
-                const data = new Uint8Array(analyser.frequencyBinCount);
+                source.connect(analyzer);
+                
+                const data = new Uint8Array(analyzer.frequencyBinCount);
 
-                function detect() {
-                    analyser.getByteFrequencyData(data);
-                    let sum = 0;
-                    for(let i=0; i<data.length; i++) sum += data[i];
-                    let vol = sum / data.length;
+                function loop() {
+                    analyzer.getByteFrequencyData(data);
+                    let vol = data.reduce((a, b) => a + b) / data.length;
 
-                    // Индикатор (стал чувствительнее)
-                    halo.style.opacity = vol / 40;
-                    halo.style.transform = `scale(${0.4 + vol/30})`;
+                    // Анимация ауры в такт дыханию
+                    gsap.to(aura, { opacity: vol/50, scale: 0.8 + vol/40, duration: 0.1 });
 
-                    // Порог снижен до 35 (было 55) - теперь легче дуть
-                    if (vol > 35) { 
-                        flame.style.display = 'none';
-                        halo.style.display = 'none';
-                        hint.innerText = "Твоё желание услышано ✨";
+                    // Снизили порог до минимума для комфорта
+                    if (vol > 30) { 
+                        gsap.to([flame, aura], { opacity: 0, duration: 0.5 });
+                        hint.innerText = "Твоё желание обязательно сбудется ✨";
                         stream.getTracks().forEach(t => t.stop());
-                    } else {
-                        requestAnimationFrame(detect);
+                        return;
                     }
+                    requestAnimationFrame(loop);
                 }
-                detect();
+                loop();
             } catch (e) {
-                hint.innerText = "Коснись пламени...";
+                hint.innerText = "Коснись свечи...";
                 flame.onclick = () => { flame.style.display = 'none'; hint.innerText = "Всё сбудется ✨"; };
             }
         }
