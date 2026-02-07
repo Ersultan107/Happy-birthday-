@@ -3,204 +3,175 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Premium Magic Test</title>
+    <title>The Cake Masterpiece</title>
     <style>
         :root {
-            --bg: #0f0f0f;
+            --cake-base: #5d4037; /* Шоколадный корж */
+            --cream-soft: #fff5f8; /* Нежный крем */
+            --glaze: #ff85a1; /* Вкусная глазурь */
             --gold: #d4a373;
-            --cream: #fff5e6;
         }
 
         body {
-            background: var(--bg);
-            color: var(--gold);
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            font-family: 'Georgia', serif;
-            overflow: hidden;
+            background: radial-gradient(circle at center, #1c1c1c, #000);
+            margin: 0; height: 100vh;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            overflow: hidden; font-family: 'serif';
         }
 
-        /* Эффект кинопленки */
-        .grain {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: url('https://upload.wikimedia.org/wikipedia/commons/7/76/1k_Grain.jpg');
-            opacity: 0.04;
-            pointer-events: none;
-            z-index: 10;
+        /* Киношная пыль на фоне */
+        .dust {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: url('https://www.transparenttextures.com/patterns/stardust.png');
+            opacity: 0.2; pointer-events: none;
         }
 
         #start-btn {
-            padding: 20px 40px;
-            background: none;
-            border: 1px solid var(--gold);
-            color: var(--gold);
-            letter-spacing: 4px;
-            cursor: pointer;
-            text-transform: uppercase;
-            transition: 0.5s;
-            z-index: 20;
+            z-index: 100; padding: 15px 40px; background: none;
+            border: 1px solid var(--gold); color: var(--gold);
+            letter-spacing: 3px; cursor: pointer; text-transform: uppercase;
         }
 
-        /* Контейнер торта */
-        #cake-zone {
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            animation: fadeIn 2s ease;
+        /* Контейнер для сборки */
+        .stage {
+            position: relative; width: 300px; height: 400px;
+            display: none; flex-direction: column-reverse; align-items: center;
         }
 
+        /* Стилизация слоев */
         .layer {
-            width: 180px; height: 35px;
-            background: #e2a99a;
-            border-radius: 8px;
-            margin: 2px 0;
-            box-shadow: inset 0 -5px 15px rgba(0,0,0,0.2);
-            opacity: 0;
+            position: relative; width: 200px; height: 50px;
+            background: var(--cake-base);
+            border-radius: 50% / 20%; /* Создаем объем */
+            box-shadow: inset 0 -10px 20px rgba(0,0,0,0.5);
+            margin-bottom: -25px; /* Накладываем слои друг на друга */
+            opacity: 0; transform: translateY(-500px);
+        }
+
+        .layer::before { /* Верхняя часть коржа */
+            content: ''; position: absolute; top: 0; width: 100%; height: 20px;
+            background: rgba(255,255,255,0.1); border-radius: 50%;
         }
 
         .cream-drip {
-            width: 190px; height: 12px;
-            background: var(--cream);
-            border-radius: 20px;
-            margin: -6px 0;
-            z-index: 2;
-            clip-path: inset(0 100% 0 0);
+            width: 210px; height: 30px;
+            background: var(--cream-soft);
+            border-radius: 50% / 40%;
+            margin-bottom: -15px; z-index: 5;
+            opacity: 0; transform: scaleX(0);
+            filter: drop-shadow(0 5px 5px rgba(0,0,0,0.3));
         }
 
-        /* Анимации сборки */
-        .show-layer { animation: slideUp 0.8s ease forwards; }
-        .show-cream { animation: drip 1.2s ease forwards; }
+        /* Анимации */
+        .fall { animation: fallIn 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+        .spread { animation: spreadCream 0.8s ease-out forwards; }
 
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(30px); }
+        @keyframes fallIn {
             to { opacity: 1; transform: translateY(0); }
         }
 
-        @keyframes drip {
-            to { clip-path: inset(0 0 0 0); }
+        @keyframes spreadCream {
+            to { opacity: 1; transform: scaleX(1); }
         }
 
         /* Свеча */
         .candle {
-            width: 5px; height: 35px;
-            background: linear-gradient(to bottom, #fff, var(--gold));
-            position: relative;
-            margin-bottom: 5px;
-            opacity: 0;
-            transition: 1s;
+            width: 6px; height: 50px; background: linear-gradient(to bottom, #fff, gold);
+            position: relative; z-index: 10; opacity: 0; margin-bottom: 10px;
         }
 
         .flame {
-            width: 12px; height: 20px;
-            background: radial-gradient(circle at bottom, #fff, #ffcc00, transparent);
-            border-radius: 50% 50% 20% 20%;
-            position: absolute; top: -22px; left: -4px;
-            filter: blur(0.5px);
-            box-shadow: 0 0 15px #ffaa00;
+            width: 14px; height: 25px; background: orange;
+            border-radius: 50% 50% 20% 20%; position: absolute; top: -30px; left: -4px;
+            box-shadow: 0 0 20px orange, 0 0 40px yellow;
             animation: flicker 0.1s infinite alternate;
         }
 
         @keyframes flicker {
-            from { transform: scale(1); } to { transform: scale(1.1) rotate(2deg); }
+            from { transform: scale(1); opacity: 0.8; }
+            to { transform: scale(1.1); opacity: 1; }
         }
 
-        #status {
-            margin-top: 30px;
-            font-style: italic;
-            letter-spacing: 1px;
-            text-align: center;
-            max-width: 80%;
+        #message {
+            margin-top: 50px; color: var(--gold); font-style: italic;
+            opacity: 0; transition: 1s; text-align: center;
         }
-
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
 <body>
 
-    <div class="grain"></div>
-    <button id="start-btn">Начать просмотр</button>
+    <div class="dust"></div>
+    <button id="start-btn">Начать таинство</button>
 
-    <div id="cake-zone">
-        <div class="candle" id="candle"><div class="flame" id="flame"></div></div>
-        <div class="layer" id="l3"></div>
-        <div class="cream-drip" id="c2"></div>
-        <div class="layer" id="l2"></div>
-        <div class="cream-drip" id="c1"></div>
+    <div class="stage" id="stage">
         <div class="layer" id="l1"></div>
-        <p id="status"></p>
+        <div class="cream-drip" id="c1"></div>
+        <div class="layer" id="l2" style="width: 160px;"></div>
+        <div class="cream-drip" id="c2" style="width: 170px;"></div>
+        <div class="layer" id="l3" style="width: 120px;"></div>
+        <div class="candle" id="candle"><div class="flame" id="flame"></div></div>
     </div>
 
+    <p id="message">Загадывай...</p>
+
     <script>
-        const startBtn = document.getElementById('start-btn');
-        const cakeZone = document.getElementById('cake-zone');
-        const status = document.getElementById('status');
+        const btn = document.getElementById('start-btn');
+        const stage = document.getElementById('stage');
+        const msg = document.getElementById('message');
         const flame = document.getElementById('flame');
 
-        startBtn.onclick = () => {
-            startBtn.style.display = 'none';
-            cakeZone.style.display = 'flex';
-            assembleCake();
-        };
-
-        function assembleCake() {
-            const steps = [
-                {id: 'l1', class: 'show-layer', d: 500},
-                {id: 'c1', class: 'show-cream', d: 1300},
-                {id: 'l2', class: 'show-layer', d: 2100},
-                {id: 'c2', class: 'show-cream', d: 2900},
-                {id: 'l3', class: 'show-layer', d: 3700}
+        btn.onclick = () => {
+            btn.style.display = 'none';
+            stage.style.display = 'flex';
+            
+            // Последовательная сборка
+            const sequence = [
+                {id: 'l1', type: 'fall', d: 500},
+                {id: 'c1', type: 'spread', d: 1500},
+                {id: 'l2', type: 'fall', d: 2300},
+                {id: 'c2', type: 'spread', d: 3100},
+                {id: 'l3', type: 'fall', d: 3900}
             ];
 
-            steps.forEach(step => {
+            sequence.forEach(s => {
                 setTimeout(() => {
-                    document.getElementById(step.id).classList.add(step.class);
-                }, step.d);
+                    document.getElementById(s.id).classList.add(s.type);
+                }, s.d);
             });
 
             setTimeout(() => {
                 document.getElementById('candle').style.opacity = '1';
-                status.innerText = "Загадай желание и дуй...";
-                startListening();
-            }, 5000);
-        }
+                msg.style.opacity = '1';
+                msg.innerText = "Дуй сильнее...";
+                initMic();
+            }, 5500);
+        };
 
-        async function startListening() {
+        async function initMic() {
             try {
                 const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                const ctx = new (window.AudioContext || window.webkitAudioContext)();
-                const analyser = ctx.createAnalyser();
-                const src = ctx.createMediaStreamSource(stream);
-                src.connect(analyser);
-                analyser.fftSize = 256;
-                const data = new Uint8Array(analyser.frequencyBinCount);
+                const ctx = new AudioContext();
+                const analyzer = ctx.createAnalyser();
+                const source = ctx.createMediaStreamSource(stream);
+                source.connect(analyzer);
+                const data = new Uint8Array(analyzer.frequencyBinCount);
 
-                function detect() {
-                    analyser.getByteFrequencyData(data);
-                    let sum = 0;
-                    for(let i=0; i<data.length; i++) sum += data[i];
-                    let volume = sum / data.length;
-
-                    // Если громкость выше порога (дуновение)
-                    if (volume > 45) { 
+                function loop() {
+                    analyzer.getByteFrequencyData(data);
+                    let volume = data.reduce((a,b) => a+b) / data.length;
+                    
+                    if (volume > 50) { 
                         flame.style.display = 'none';
-                        status.innerText = "Всё обязательно сбудется ✨";
+                        msg.innerText = "Пусть всё сбудется ✨";
                         stream.getTracks().forEach(t => t.stop());
-                        return;
+                    } else {
+                        requestAnimationFrame(loop);
                     }
-                    requestAnimationFrame(detect);
                 }
-                detect();
-            } catch (err) {
-                status.innerText = "Микрофон не сработал. Просто коснись огня.";
-                flame.onclick = () => {
-                    flame.style.display = 'none';
-                    status.innerText = "Всё обязательно сбудется ✨";
-                };
+                loop();
+            } catch (e) {
+                msg.innerText = "Микрофон спит, просто нажми на огонь";
+                flame.onclick = () => { flame.style.display = 'none'; msg.innerText = "Пусть всё сбудется ✨"; };
             }
         }
     </script>
