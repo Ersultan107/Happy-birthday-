@@ -3,211 +3,212 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aesthetic Test</title>
+    <title>Premium Birthday Magic</title>
     <style>
         :root {
-            --bg-color: #121212;
-            --accent-color: #d4a373; /* Цвет шампань/песок */
-            --text-color: #e0e0e0;
+            --cake-color: #f4dcd6;
+            --cream-color: #ffffff;
+            --accent: #d4a373;
         }
 
         body {
-            background-color: var(--bg-color);
-            color: var(--text-color);
+            background: radial-gradient(circle at center, #2c2c2c 0%, #111111 100%);
             margin: 0;
+            height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            font-family: 'serif';
+            font-family: 'Playfair Display', serif;
             overflow: hidden;
-            position: relative;
+            perspective: 1000px;
         }
 
-        /* Эффект зернистости пленки */
-        body::before {
-            content: "";
-            position: absolute;
+        /* Эффект старой кинопленки */
+        .film-grain {
+            position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
             background: url('https://upload.wikimedia.org/wikipedia/commons/7/76/1k_Grain.jpg');
-            opacity: 0.04;
+            opacity: 0.05;
             pointer-events: none;
-            z-index: 10;
+            z-index: 100;
+            animation: grain 0.5s steps(10) infinite;
         }
 
-        #intro-screen {
-            text-align: center;
-            z-index: 20;
-        }
-
-        button {
-            background: none;
-            border: 1px solid var(--accent-color);
-            color: var(--accent-color);
-            padding: 15px 40px;
-            font-size: 1rem;
-            letter-spacing: 2px;
-            cursor: pointer;
-            transition: all 0.5s ease;
-            text-transform: uppercase;
-        }
-
-        button:hover {
-            background: var(--accent-color);
-            color: white;
-            box-shadow: 0 0 20px rgba(212, 163, 115, 0.4);
+        @keyframes grain {
+            0%, 100% { transform: translate(0, 0); }
+            10% { transform: translate(-1%, -1%); }
+            30% { transform: translate(1%, 1%); }
+            50% { transform: translate(-0.5%, 0.5%); }
         }
 
         /* Контейнер торта */
-        #cake-container {
-            display: none;
-            text-align: center;
-            animation: fadeIn 3s ease;
-        }
-
-        .cake-silhouette {
-            width: 180px;
-            height: 120px;
-            background: linear-gradient(to bottom, #2a2a2a, #1a1a1a);
-            border-radius: 10px 10px 5px 5px;
+        .cake-stage {
             position: relative;
-            margin: 0 auto;
-            box-shadow: 0 0 50px rgba(0,0,0,0.5);
+            width: 250px;
+            height: 300px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            display: none; /* Появится после клика */
         }
 
-        /* Эстетичная свеча */
-        .candle {
-            width: 4px;
+        /* Анимация слоев */
+        .layer {
+            width: 200px;
             height: 40px;
-            background: var(--accent-color);
-            margin: -40px auto 0;
-            position: relative;
+            background: var(--cake-color);
+            border-radius: 10px;
+            box-shadow: inset 0 -5px 10px rgba(0,0,0,0.2);
             opacity: 0;
-            transition: opacity 2s ease;
+            transform: translateY(20px);
+        }
+
+        .cream {
+            width: 210px;
+            height: 15px;
+            background: var(--cream-color);
+            border-radius: 20px;
+            margin-top: -5px;
+            z-index: 2;
+            clip-path: inset(0 100% 0 0); /* Эффект намазывания */
+        }
+
+        /* Анимации появления */
+        .animate-layer { animation: layerUp 1s ease forwards; }
+        .animate-cream { animation: spreadCream 1.5s ease forwards; }
+
+        @keyframes layerUp {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes spreadCream {
+            to { clip-path: inset(0 0 0 0); }
+        }
+
+        /* Свеча и огонь */
+        .candle {
+            width: 6px; height: 40px;
+            background: linear-gradient(to bottom, #eee, var(--accent));
+            margin-bottom: 2px;
+            opacity: 0;
+            position: relative;
         }
 
         .flame {
-            width: 12px;
-            height: 18px;
-            background: #ffdbac;
+            width: 14px; height: 22px;
+            background: radial-gradient(circle at bottom, #fff 0%, #fbd38d 40%, #f6ad55 70%, transparent 100%);
             border-radius: 50% 50% 20% 20%;
-            position: absolute;
-            top: -22px;
-            left: -4px;
-            filter: blur(1px);
-            box-shadow: 0 0 15px #f5a623, 0 0 30px #f5a623;
+            position: absolute; top: -25px; left: -4px;
+            filter: blur(0.5px);
+            box-shadow: 0 0 20px #f6ad55;
             animation: flicker 0.1s infinite alternate;
         }
 
         @keyframes flicker {
-            from { transform: scale(1) rotate(-1deg); opacity: 0.8; }
-            to { transform: scale(1.1) rotate(1deg); opacity: 1; }
+            0% { transform: scale(1) rotate(-2deg); }
+            100% { transform: scale(1.1) rotate(2deg); }
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; filter: blur(10px); }
-            to { opacity: 1; filter: blur(0); }
+        /* Кнопка */
+        #start-btn {
+            z-index: 150;
+            padding: 20px 50px;
+            background: none;
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            font-size: 1.2rem;
+            letter-spacing: 5px;
+            cursor: pointer;
+            transition: 0.5s;
+            text-transform: uppercase;
         }
 
-        /* Индикатор микрофона (для теста) */
-        #mic-indicator {
-            position: fixed;
-            bottom: 20px;
-            width: 100px;
-            height: 2px;
-            background: #333;
-            left: 50%;
-            transform: translateX(-50%);
-            overflow: hidden;
-            display: none;
-        }
-        #mic-bar {
-            height: 100%;
-            width: 0%;
-            background: var(--accent-color);
-            transition: width 0.1s;
-        }
+        #start-btn:hover { background: var(--accent); color: white; }
 
-        .instruction {
-            margin-top: 40px;
-            font-style: italic;
-            opacity: 0.6;
-            font-size: 0.9rem;
-            letter-spacing: 1px;
+        .hint {
+            position: absolute; bottom: -60px;
+            font-style: italic; opacity: 0; transition: 1s;
+            color: var(--accent); width: 300px; text-align: center;
         }
     </style>
 </head>
 <body>
 
-    <div id="intro-screen">
-        <button id="startBtn">Войти в момент</button>
-    </div>
+    <div class="film-grain"></div>
+    <button id="start-btn">Открыть подарок</button>
 
-    <div id="cake-container">
-        <div class="cake-silhouette"></div>
-        <div class="candle" id="candle">
-            <div class="flame" id="flame"></div>
-        </div>
-        <p class="instruction" id="statusText">Загадай желание...</p>
+    <div class="cake-stage" id="stage">
+        <div class="candle" id="candle"><div class="flame" id="flame"></div></div>
+        <div class="layer" id="l3"></div>
+        <div class="cream" id="c2"></div>
+        <div class="layer" id="l2"></div>
+        <div class="cream" id="c1"></div>
+        <div class="layer" id="l1"></div>
+        <div class="hint" id="hint">Загадай желание и дуй на свечу...</div>
     </div>
-
-    <div id="mic-indicator"><div id="mic-bar"></div></div>
 
     <script>
-        const startBtn = document.getElementById('startBtn');
-        const intro = document.getElementById('intro-screen');
-        const cakeBox = document.getElementById('cake-container');
-        const candle = document.getElementById('candle');
+        const btn = document.getElementById('start-btn');
+        const stage = document.getElementById('stage');
+        const hint = document.getElementById('hint');
         const flame = document.getElementById('flame');
-        const micBar = document.getElementById('mic-bar');
-        const statusText = document.getElementById('statusText');
 
-        startBtn.onclick = async () => {
-            intro.style.display = 'none';
-            cakeBox.style.display = 'block';
-            document.getElementById('mic-indicator').style.display = 'block';
-
-            setTimeout(() => {
-                candle.style.opacity = '1';
-                initAudio();
-            }, 1000);
+        btn.onclick = () => {
+            btn.style.display = 'none';
+            stage.style.display = 'flex';
+            buildCake();
         };
 
-        async function initAudio() {
+        function buildCake() {
+            const parts = [
+                {id: 'l1', type: 'layer', delay: 500},
+                {id: 'c1', type: 'cream', delay: 1500},
+                {id: 'l2', type: 'layer', delay: 2500},
+                {id: 'c2', type: 'cream', delay: 3500},
+                {id: 'l3', type: 'layer', delay: 4500}
+            ];
+
+            parts.forEach(p => {
+                setTimeout(() => {
+                    document.getElementById(p.id).classList.add(p.type === 'layer' ? 'animate-layer' : 'animate-cream');
+                }, p.delay);
+            });
+
+            setTimeout(() => {
+                document.getElementById('candle').style.opacity = '1';
+                hint.style.opacity = '1';
+                initMic();
+            }, 6000);
+        }
+
+        async function initMic() {
             try {
                 const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const audioContext = new AudioContext();
                 const analyser = audioContext.createAnalyser();
                 const source = audioContext.createMediaStreamSource(stream);
                 source.connect(analyser);
-                analyser.fftSize = 256;
+                
                 const dataArray = new Uint8Array(analyser.frequencyBinCount);
 
-                function detect() {
+                function check() {
                     analyser.getByteFrequencyData(dataArray);
-                    let values = 0;
-                    for (let i = 0; i < dataArray.length; i++) values += dataArray[i];
-                    let average = values / dataArray.length;
+                    let sum = dataArray.reduce((a, b) => a + b, 0);
+                    let avg = sum / dataArray.length;
 
-                    // Визуализация для теста
-                    micBar.style.width = Math.min(average * 2, 100) + '%';
-
-                    if (average > 50) { // Порог дуновения
+                    if (avg > 55) { // Реакция на дуновение
                         flame.style.display = 'none';
-                        statusText.innerText = "Оно обязательно сбудется.";
-                        statusText.style.color = "#d4a373";
+                        hint.innerText = "Пусть всё сбудется ✨";
                         stream.getTracks().forEach(t => t.stop());
-                        return;
+                    } else {
+                        requestAnimationFrame(check);
                     }
-                    requestAnimationFrame(detect);
                 }
-                detect();
-            } catch (err) {
-                statusText.innerText = "Микрофон заблокирован. Тапни по свече.";
-                candle.onclick = () => {
-                    flame.style.display = 'none';
-                    statusText.innerText = "Оно обязательно сбудется.";
-                };
+                check();
+            } catch (e) {
+                hint.innerText = "Микрофон недоступен, просто нажми на огонь";
+                flame.onclick = () => { flame.style.display = 'none'; hint.innerText = "Пусть всё сбудется ✨"; };
             }
         }
     </script>
