@@ -3,137 +3,138 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Cake Masterpiece</title>
+    <title>Magic Cake Build</title>
     <style>
         :root {
-            --cake-base: #5d4037; /* Шоколадный корж */
-            --cream-soft: #fff5f8; /* Нежный крем */
-            --glaze: #ff85a1; /* Вкусная глазурь */
             --gold: #d4a373;
+            --cake: #4e342e;
+            --cream: #fff0f3;
         }
 
         body {
-            background: radial-gradient(circle at center, #1c1c1c, #000);
+            background: radial-gradient(circle at center, #1a1a1a, #000);
             margin: 0; height: 100vh;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            overflow: hidden; font-family: 'serif';
-        }
-
-        /* Киношная пыль на фоне */
-        .dust {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: url('https://www.transparenttextures.com/patterns/stardust.png');
-            opacity: 0.2; pointer-events: none;
+            overflow: hidden; font-family: 'Georgia', serif; color: var(--gold);
         }
 
         #start-btn {
-            z-index: 100; padding: 15px 40px; background: none;
+            z-index: 100; padding: 20px 40px; background: none;
             border: 1px solid var(--gold); color: var(--gold);
-            letter-spacing: 3px; cursor: pointer; text-transform: uppercase;
+            letter-spacing: 5px; cursor: pointer; text-transform: uppercase;
+            transition: 0.3s;
         }
 
-        /* Контейнер для сборки */
+        #start-btn:hover { background: rgba(212, 163, 115, 0.1); }
+
         .stage {
-            position: relative; width: 300px; height: 400px;
+            position: relative; width: 300px; height: 350px;
             display: none; flex-direction: column-reverse; align-items: center;
         }
 
-        /* Стилизация слоев */
+        /* Объемные слои */
         .layer {
-            position: relative; width: 200px; height: 50px;
-            background: var(--cake-base);
-            border-radius: 50% / 20%; /* Создаем объем */
-            box-shadow: inset 0 -10px 20px rgba(0,0,0,0.5);
-            margin-bottom: -25px; /* Накладываем слои друг на друга */
-            opacity: 0; transform: translateY(-500px);
+            width: 220px; height: 60px; background: var(--cake);
+            border-radius: 50% / 25%; margin-bottom: -30px;
+            box-shadow: inset 0 -15px 30px rgba(0,0,0,0.6), 0 10px 20px rgba(0,0,0,0.5);
+            opacity: 0; transform: translateY(-600px) rotate(5deg);
+            z-index: 1;
         }
 
-        .layer::before { /* Верхняя часть коржа */
-            content: ''; position: absolute; top: 0; width: 100%; height: 20px;
-            background: rgba(255,255,255,0.1); border-radius: 50%;
+        .cream {
+            width: 230px; height: 35px; background: var(--cream);
+            border-radius: 50% / 40%; margin-bottom: -20px;
+            opacity: 0; transform: scale(0.5); z-index: 2;
+            filter: drop-shadow(0 5px 10px rgba(0,0,0,0.2));
         }
 
-        .cream-drip {
-            width: 210px; height: 30px;
-            background: var(--cream-soft);
-            border-radius: 50% / 40%;
-            margin-bottom: -15px; z-index: 5;
-            opacity: 0; transform: scaleX(0);
-            filter: drop-shadow(0 5px 5px rgba(0,0,0,0.3));
+        /* Анимации падения */
+        .drop-layer { animation: layerDrop 1.2s cubic-bezier(0.23, 1, 0.32, 1) forwards; }
+        .appear-cream { animation: creamSpread 0.8s ease-out forwards; }
+
+        @keyframes layerDrop {
+            to { opacity: 1; transform: translateY(0) rotate(0deg); }
         }
 
-        /* Анимации */
-        .fall { animation: fallIn 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
-        .spread { animation: spreadCream 0.8s ease-out forwards; }
-
-        @keyframes fallIn {
-            to { opacity: 1; transform: translateY(0); }
+        @keyframes creamSpread {
+            to { opacity: 1; transform: scale(1); }
         }
 
-        @keyframes spreadCream {
-            to { opacity: 1; transform: scaleX(1); }
-        }
-
-        /* Свеча */
+        /* Свеча и пламя */
         .candle {
-            width: 6px; height: 50px; background: linear-gradient(to bottom, #fff, gold);
+            width: 8px; height: 60px; background: linear-gradient(to bottom, #fff, var(--gold));
             position: relative; z-index: 10; opacity: 0; margin-bottom: 10px;
+            transition: 2s;
         }
 
         .flame {
-            width: 14px; height: 25px; background: orange;
-            border-radius: 50% 50% 20% 20%; position: absolute; top: -30px; left: -4px;
-            box-shadow: 0 0 20px orange, 0 0 40px yellow;
+            width: 16px; height: 26px; background: #ff9800;
+            border-radius: 50% 50% 20% 20%; position: absolute; top: -32px; left: -4px;
+            box-shadow: 0 0 20px #ff5722, 0 0 40px #ffeb3b;
             animation: flicker 0.1s infinite alternate;
         }
 
-        @keyframes flicker {
-            from { transform: scale(1); opacity: 0.8; }
-            to { transform: scale(1.1); opacity: 1; }
+        /* Индикатор микрофона вокруг пламени */
+        .mic-halo {
+            position: absolute; width: 40px; height: 40px;
+            border-radius: 50%; border: 2px solid var(--gold);
+            top: -40px; left: -16px; opacity: 0; transform: scale(0.5);
+            transition: 0.1s; pointer-events: none;
         }
 
-        #message {
-            margin-top: 50px; color: var(--gold); font-style: italic;
-            opacity: 0; transition: 1s; text-align: center;
+        @keyframes flicker {
+            from { transform: scale(1); opacity: 0.9; }
+            to { transform: scale(1.1) rotate(2deg); opacity: 1; }
+        }
+
+        #hint {
+            margin-top: 40px; opacity: 0; transition: 1s;
+            letter-spacing: 2px; text-align: center; font-style: italic;
         }
     </style>
 </head>
 <body>
 
-    <div class="dust"></div>
-    <button id="start-btn">Начать таинство</button>
+    <button id="start-btn">Открыть тайну</button>
 
     <div class="stage" id="stage">
         <div class="layer" id="l1"></div>
-        <div class="cream-drip" id="c1"></div>
-        <div class="layer" id="l2" style="width: 160px;"></div>
-        <div class="cream-drip" id="c2" style="width: 170px;"></div>
-        <div class="layer" id="l3" style="width: 120px;"></div>
-        <div class="candle" id="candle"><div class="flame" id="flame"></div></div>
+        <div class="cream" id="c1"></div>
+        <div class="layer" id="l2" style="width: 180px;"></div>
+        <div class="cream" id="c2" style="width: 190px;"></div>
+        <div class="layer" id="l3" style="width: 140px;"></div>
+        
+        <div class="candle" id="candle">
+            <div class="mic-halo" id="halo"></div>
+            <div class="flame" id="flame"></div>
+        </div>
     </div>
 
-    <p id="message">Загадывай...</p>
+    <p id="hint">Приготовься дунуть...</p>
 
     <script>
-        const btn = document.getElementById('start-btn');
+        const startBtn = document.getElementById('start-btn');
         const stage = document.getElementById('stage');
-        const msg = document.getElementById('message');
+        const hint = document.getElementById('hint');
         const flame = document.getElementById('flame');
+        const halo = document.getElementById('halo');
 
-        btn.onclick = () => {
-            btn.style.display = 'none';
+        startBtn.onclick = () => {
+            startBtn.style.display = 'none';
             stage.style.display = 'flex';
-            
-            // Последовательная сборка
-            const sequence = [
-                {id: 'l1', type: 'fall', d: 500},
-                {id: 'c1', type: 'spread', d: 1500},
-                {id: 'l2', type: 'fall', d: 2300},
-                {id: 'c2', type: 'spread', d: 3100},
-                {id: 'l3', type: 'fall', d: 3900}
+            buildCake();
+        };
+
+        function buildCake() {
+            const steps = [
+                {id: 'l1', type: 'drop-layer', d: 500},
+                {id: 'c1', type: 'appear-cream', d: 1700},
+                {id: 'l2', type: 'drop-layer', d: 2500},
+                {id: 'c2', type: 'appear-cream', d: 3700},
+                {id: 'l3', type: 'drop-layer', d: 4500}
             ];
 
-            sequence.forEach(s => {
+            steps.forEach(s => {
                 setTimeout(() => {
                     document.getElementById(s.id).classList.add(s.type);
                 }, s.d);
@@ -141,38 +142,61 @@
 
             setTimeout(() => {
                 document.getElementById('candle').style.opacity = '1';
-                msg.style.opacity = '1';
-                msg.innerText = "Дуй сильнее...";
-                initMic();
-            }, 5500);
-        };
+                hint.style.opacity = '1';
+                hint.innerText = "Загадай желание и дуй на экран";
+                startMicMagic();
+            }, 6000);
+        }
 
-        async function initMic() {
+        async function startMicMagic() {
             try {
                 const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                const ctx = new AudioContext();
-                const analyzer = ctx.createAnalyser();
-                const source = ctx.createMediaStreamSource(stream);
-                source.connect(analyzer);
-                const data = new Uint8Array(analyzer.frequencyBinCount);
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const analyser = audioContext.createAnalyser();
+                const microphone = audioContext.createMediaStreamSource(stream);
+                
+                analyser.fftSize = 256;
+                microphone.connect(analyser);
+                
+                const bufferLength = analyser.frequencyBinCount;
+                const dataArray = new Uint8Array(bufferLength);
 
-                function loop() {
-                    analyzer.getByteFrequencyData(data);
-                    let volume = data.reduce((a,b) => a+b) / data.length;
-                    
-                    if (volume > 50) { 
-                        flame.style.display = 'none';
-                        msg.innerText = "Пусть всё сбудется ✨";
-                        stream.getTracks().forEach(t => t.stop());
-                    } else {
-                        requestAnimationFrame(loop);
+                function checkVolume() {
+                    analyser.getByteFrequencyData(dataArray);
+                    let values = 0;
+                    for (let i = 0; i < bufferLength; i++) {
+                        values += dataArray[i];
                     }
+                    let average = values / bufferLength;
+
+                    // Визуальный отклик на дыхание
+                    if (average > 10) {
+                        halo.style.opacity = (average / 100);
+                        halo.style.transform = `scale(${0.5 + average/50})`;
+                    } else {
+                        halo.style.opacity = 0;
+                    }
+
+                    // Порог для задувания
+                    if (average > 55) { 
+                        extinguish();
+                        stream.getTracks().forEach(track => track.stop());
+                        return;
+                    }
+                    requestAnimationFrame(checkVolume);
                 }
-                loop();
-            } catch (e) {
-                msg.innerText = "Микрофон спит, просто нажми на огонь";
-                flame.onclick = () => { flame.style.display = 'none'; msg.innerText = "Пусть всё сбудется ✨"; };
+                checkVolume();
+            } catch (err) {
+                hint.innerText = "Просто коснись огонька...";
+                flame.onclick = extinguish;
             }
+        }
+
+        function extinguish() {
+            flame.style.display = 'none';
+            halo.style.display = 'none';
+            hint.innerText = "Всё сбудется. Ты заслуживаешь лучшего ✨";
+            hint.style.color = "#fff";
         }
     </script>
 </body>
