@@ -3,161 +3,157 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Priority Message</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Montserrat:wght@300;500&display=swap" rel="stylesheet">
+    <title>Для тебя ❤️</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;600&family=Great+Vibes&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
     
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
         body {
-            background: #0f0c29;
-            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
             height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
             font-family: 'Montserrat', sans-serif;
             overflow: hidden;
-            color: white;
+            color: #4a4a4a;
         }
 
-        /* Фоновое свечение */
-        .bg-glow {
+        /* Анимированный фон с сердечками */
+        .heart-bg {
             position: absolute;
-            width: 300px;
-            height: 300px;
-            background: #ff0055;
-            filter: blur(150px);
-            border-radius: 50%;
-            z-index: 0;
-            opacity: 0.5;
-            animation: moveGlow 10s infinite alternate;
+            font-size: 20px;
+            color: rgba(255, 255, 255, 0.6);
+            animation: float 6s linear infinite;
+            z-index: 1;
+            pointer-events: none;
         }
 
-        @keyframes moveGlow {
-            from { transform: translate(-50%, -50%); }
-            to { transform: translate(50%, 50%); }
+        @keyframes float {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(-20vh) rotate(360deg); opacity: 0; }
         }
 
-        /* Начальная кнопка */
+        /* Кнопка на главном экране */
         #start-btn {
             position: relative;
             z-index: 10;
             padding: 20px 40px;
-            font-family: 'Orbitron', sans-serif;
-            background: transparent;
-            color: #fff;
-            border: 2px solid #00f2ff;
-            border-radius: 5px;
+            background: white;
+            color: #ff4d6d;
+            border: none;
+            border-radius: 50px;
             cursor: pointer;
             font-size: 1.1rem;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            transition: 0.5s;
-            box-shadow: 0 0 20px rgba(0, 242, 255, 0.4);
+            font-weight: 600;
+            box-shadow: 0 10px 30px rgba(255, 77, 109, 0.3);
+            transition: 0.3s;
         }
 
-        #start-btn:hover {
-            background: #00f2ff;
-            color: #000;
-            box-shadow: 0 0 50px rgba(0, 242, 255, 0.8);
-        }
-
-        /* Главная карточка */
-        .glass-card {
+        /* Карточка */
+        .card {
             display: none;
             position: relative;
             z-index: 10;
             width: 90%;
-            max-width: 450px;
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
-            padding: 40px;
+            max-width: 400px;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 30px;
+            padding: 40px 25px;
             text-align: center;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
             opacity: 0;
-            transform: translateY(30px);
-            transition: 1s all ease;
+            transform: scale(0.8);
+            transition: 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        .glass-card.active { display: block; opacity: 1; transform: translateY(0); }
+        .card.active { display: block; opacity: 1; transform: scale(1); }
 
         h1 {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 1.8rem;
+            font-family: 'Great Vibes', cursive;
+            font-size: 3rem;
+            color: #ff4d6d;
             margin-bottom: 20px;
-            background: linear-gradient(to right, #00f2ff, #ff0055);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
         }
 
         p {
-            font-weight: 300;
+            font-size: 1.05rem;
             line-height: 1.6;
             margin-bottom: 30px;
-            color: rgba(255,255,255,0.8);
+            color: #555;
         }
 
-        /* Кнопки */
         .btn-container {
             display: flex;
+            flex-direction: row;
             justify-content: center;
             align-items: center;
-            gap: 20px;
+            gap: 15px;
             height: 60px;
         }
 
         .btn {
-            padding: 12px 35px;
-            border-radius: 10px;
+            padding: 12px 30px;
+            border-radius: 50px;
             border: none;
-            font-family: 'Orbitron', sans-serif;
-            font-size: 0.9rem;
+            font-weight: 600;
             cursor: pointer;
-            transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: 0.3s;
+            font-size: 1rem;
         }
 
         #yes-btn {
-            background: #00f2ff;
-            color: #000;
-            box-shadow: 0 5px 15px rgba(0, 242, 255, 0.4);
+            background: #ff4d6d;
+            color: white;
+            box-shadow: 0 5px 15px rgba(255, 77, 109, 0.4);
         }
-
-        #yes-btn:hover { transform: scale(1.1); box-shadow: 0 5px 25px rgba(0, 242, 255, 0.6); }
 
         #no-btn {
-            background: rgba(255, 255, 255, 0.1);
-            color: #fff;
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: #f0f0f0;
+            color: #888;
+            border: 1px solid #ddd;
         }
 
-        /* Кастомный курсор или эффекты */
-        .particles { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
+        /* Мобильная адаптация */
+        @media (max-width: 480px) {
+            h1 { font-size: 2.5rem; }
+            .btn { padding: 12px 20px; font-size: 0.9rem; }
+        }
     </style>
 </head>
 <body>
 
-    <div class="bg-glow"></div>
-    <div class="particles" id="particles"></div>
+    <button id="start-btn" onclick="init()">У меня есть кое-что для тебя...</button>
 
-    <button id="start-btn" onclick="init()">Инициализировать доступ</button>
-
-    <div class="glass-card" id="card">
-        <h1>ACCESS GRANTED</h1>
-        <div id="text-area">
-            <p>Я знаю, что накосячил. Но в моей системе ты — самый важный элемент. Без тебя всё выдает ошибку.</p>
-            <p>Перезагрузим наши отношения?</p>
+    <div class="card" id="card">
+        <h1>Прости меня...</h1>
+        <div id="content">
+            <p>Я знаю, что был не прав. Иногда я совершаю ошибки, но я очень ценю каждый момент с тобой.</p>
+            <p>Давай забудем всё плохое? ❤️</p>
         </div>
         <div class="btn-container">
-            <button class="btn" id="yes-btn" onclick="celebrate()">ДА</button>
-            <button class="btn" id="no-btn" onmouseover="dodge()" onclick="dodge()">НЕТ</button>
+            <button class="btn" id="yes-btn" onclick="celebrate()">Да</button>
+            <button class="btn" id="no-btn" onmouseover="dodge()" onclick="dodge()">Нет</button>
         </div>
     </div>
 
     <script>
+        // Создание летящих сердечек
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.classList.add('heart-bg');
+            heart.innerHTML = '❤️';
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.animationDuration = (Math.random() * 3 + 3) + 's';
+            document.body.appendChild(heart);
+            setTimeout(() => heart.remove(), 6000);
+        }
+        setInterval(createHeart, 400);
+
         function init() {
             document.getElementById('start-btn').style.display = 'none';
             const card = document.getElementById('card');
@@ -166,33 +162,23 @@
 
         function dodge() {
             const btn = document.getElementById('no-btn');
-            const x = Math.random() * (window.innerWidth - btn.offsetWidth);
-            const y = Math.random() * (window.innerHeight - btn.offsetHeight);
-            
+            const x = Math.random() * (window.innerWidth - btn.offsetWidth - 40) + 20;
+            const y = Math.random() * (window.innerHeight - btn.offsetHeight - 40) + 20;
             btn.style.position = 'fixed';
-            btn.style.transition = '0.2s';
             btn.style.left = x + 'px';
             btn.style.top = y + 'px';
-            btn.style.zIndex = '1000';
         }
 
         function celebrate() {
-            const duration = 5 * 1000;
-            const animationEnd = Date.now() + duration;
-            const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+            confetti({
+                particleCount: 150,
+                spread: 70,
+                origin: { y: 0.6 },
+                colors: ['#ff4d6d', '#ff8fa3', '#ffffff']
+            });
 
-            function randomInRange(min, max) { return Math.random() * (max - min) + min; }
-
-            const interval = setInterval(function() {
-                const timeLeft = animationEnd - Date.now();
-                if (timeLeft <= 0) return clearInterval(interval);
-
-                const particleCount = 50 * (timeLeft / duration);
-                confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } }));
-                confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } }));
-            }, 250);
-
-            document.getElementById('text-area').innerHTML = "<h1>СИСТЕМА ВОССТАНОВЛЕНА ❤️</h1><p>Я тебя люблю. Больше никаких ошибок, обещаю.</p>";
+            document.querySelector('h1').innerText = "Я тебя люблю!";
+            document.getElementById('content').innerHTML = "<p>Спасибо за твое терпение и любовь. Ты — моё всё! ❤️</p>";
             document.querySelector('.btn-container').style.display = 'none';
         }
     </script>
