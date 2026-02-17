@@ -3,181 +3,183 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dreamy Film Cake</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <title>Для моей самой любимой</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;600&family=Great+Vibes&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+    
     <style>
         :root {
-            --cake: #362218;
-            --cream: #fff9f0;
-            --gold: #d4a373;
-            --flame: #ff8d00;
+            --bg-gradient: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            --glass: rgba(255, 255, 255, 0.2);
+            --glass-border: rgba(255, 255, 255, 0.5);
         }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            background: #0a0a0a;
-            margin: 0; height: 100vh;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            overflow: hidden; font-family: 'Playfair Display', serif;
+            font-family: 'Montserrat', sans-serif;
+            background: var(--bg-gradient);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            color: #fff;
         }
 
-        /* Эффект кинопленки */
-        .film-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle, transparent 20%, rgba(0,0,0,0.8) 100%);
-            pointer-events: none; z-index: 50;
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
-        .grain {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: url('https://upload.wikimedia.org/wikipedia/commons/7/76/1k_Grain.jpg');
-            opacity: 0.03; pointer-events: none; z-index: 51; mix-blend-mode: overlay;
+        /* Плавающие сердечки */
+        .heart {
+            position: absolute;
+            bottom: -100px;
+            font-size: 20px;
+            color: rgba(255, 255, 255, 0.4);
+            animation: fly 10s linear infinite;
+            z-index: 0;
         }
+
+        @keyframes fly {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(-120vh) rotate(360deg); opacity: 0; }
+        }
+
+        .card {
+            background: var(--glass);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid var(--glass-border);
+            border-radius: 30px;
+            padding: 40px;
+            width: 90%;
+            max-width: 500px;
+            text-align: center;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            z-index: 10;
+            transform: translateY(20px);
+            opacity: 0;
+            transition: all 1s ease;
+        }
+
+        .card.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        h1 {
+            font-family: 'Great Vibes', cursive;
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        p { font-size: 1.1rem; line-height: 1.6; margin-bottom: 30px; font-weight: 300; }
+
+        .btn-group {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            height: 100px;
+            position: relative;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border-radius: 50px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: 0.3s;
+            font-size: 1rem;
+        }
+
+        #yes { background: #fff; color: #e73c7e; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        #no { background: rgba(0,0,0,0.2); color: #fff; border: 1px solid #fff; }
 
         #start-btn {
-            z-index: 100; padding: 20px 50px; background: none;
-            border: 1px solid var(--gold); color: var(--gold);
-            letter-spacing: 5px; cursor: pointer; text-transform: uppercase;
-            transition: 0.5s; backdrop-filter: blur(5px);
+            background: #fff;
+            color: #e73c7e;
+            padding: 20px 40px;
+            font-size: 1.2rem;
+            border-radius: 50px;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            z-index: 20;
+            transition: 0.3s;
         }
 
-        .stage {
-            position: relative; width: 350px; height: 450px;
-            display: none; flex-direction: column-reverse; align-items: center;
-        }
+        #start-btn:hover { transform: scale(1.1); }
 
-        /* Объемный торт с текстурой */
-        .layer {
-            width: 260px; height: 90px;
-            background: linear-gradient(180deg, #4e3528 0%, var(--cake) 100%);
-            border-radius: 130px / 35px;
-            position: relative; margin-bottom: -45px;
-            box-shadow: inset 0 -20px 40px rgba(0,0,0,0.8), 0 30px 50px rgba(0,0,0,0.9);
-            z-index: 1;
-        }
-
-        .layer::before { /* Световой блик сверху */
-            content: ''; position: absolute; top: 0; left: 5%; width: 90%; height: 35px;
-            background: rgba(255,255,255,0.03); border-radius: 50%;
-        }
-
-        .cream {
-            width: 270px; height: 45px;
-            background: radial-gradient(circle at 50% 0%, #ffffff 0%, #f2e6d9 100%);
-            border-radius: 135px / 22px;
-            margin-bottom: -35px; z-index: 5;
-            filter: drop-shadow(0 10px 15px rgba(0,0,0,0.5));
-        }
-
-        /* Свеча и магический огонь */
-        .candle {
-            width: 10px; height: 80px;
-            background: linear-gradient(to bottom, #fff, var(--gold));
-            position: relative; z-index: 10; margin-bottom: 25px;
-            border-radius: 2px; box-shadow: 0 0 20px rgba(255,255,255,0.1);
-        }
-
-        .flame-core {
-            width: 24px; height: 40px; background: var(--flame);
-            border-radius: 50% 50% 20% 20%; position: absolute; top: -45px; left: -7px;
-            box-shadow: 0 0 40px var(--flame), 0 0 80px #ffea00;
-            filter: blur(1px);
-        }
-
-        .mic-aura {
-            position: absolute; width: 80px; height: 80px;
-            border: 1px solid var(--gold); border-radius: 50%;
-            top: -65px; left: -35px; opacity: 0; pointer-events: none;
-        }
-
-        #hint {
-            color: var(--gold); margin-top: 60px; font-style: italic;
-            opacity: 0; font-size: 1.1rem; text-align: center;
-            text-shadow: 0 0 10px rgba(212,163,115,0.5);
+        @media (max-width: 480px) {
+            h1 { font-size: 2.8rem; }
+            .card { padding: 25px; }
+            .btn-group { flex-direction: column; gap: 15px; }
+            #no { position: static !important; }
         }
     </style>
 </head>
 <body>
 
-    <div class="film-overlay"></div>
-    <div class="grain"></div>
+    <button id="start-btn" onclick="init()">У меня есть кое-что для тебя...</button>
 
-    <button id="start-btn">Открыть подарок</button>
-
-    <div class="stage" id="stage">
-        <div class="layer" id="l1"></div>
-        <div class="cream" id="c1"></div>
-        <div class="layer" id="l2" style="width: 200px;"></div>
-        <div class="cream" id="c2" style="width: 210px;"></div>
-        <div class="layer" id="l3" style="width: 140px;"></div>
-        
-        <div class="candle" id="candle" style="opacity: 0;">
-            <div class="mic-aura" id="aura"></div>
-            <div class="flame-core" id="flame"></div>
+    <div class="card" id="mainCard">
+        <h1 id="title">Прости меня...</h1>
+        <div id="content">
+            <p>Я долго думал, как сказать это правильно. Иногда я бываю невыносим, но ты — лучшее, что случалось в моей жизни.</p>
+            <p>Давай забудем все плохое? ❤️</p>
+        </div>
+        <div class="btn-group">
+            <button class="btn" id="yes" onclick="finish()">Да</button>
+            <button class="btn" id="no" onmouseover="escape()" onclick="escape()">Нет</button>
         </div>
     </div>
 
-    <p id="hint">Загадай желание...</p>
-
     <script>
-        const startBtn = document.getElementById('start-btn');
-        const stage = document.getElementById('stage');
-        const hint = document.getElementById('hint');
-        const flame = document.getElementById('flame');
-        const aura = document.getElementById('aura');
+        // Создаем плавающие сердечки
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.classList.add('heart');
+            heart.innerHTML = '❤️';
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.animationDuration = Math.random() * 5 + 5 + 's';
+            heart.style.opacity = Math.random();
+            document.body.appendChild(heart);
+            setTimeout(() => heart.remove(), 10000);
+        }
+        setInterval(createHeart, 500);
 
-        startBtn.onclick = () => {
-            gsap.to(startBtn, { opacity: 0, duration: 0.5, onComplete: () => {
-                startBtn.style.display = 'none';
-                stage.style.display = 'flex';
-                buildCake();
-            }});
-        };
-
-        function buildCake() {
-            const tl = gsap.timeline();
-
-            // Анимация сборки через GSAP (плавно и мягко)
-            tl.fromTo("#l1", {y: -800, opacity: 0}, {y: 0, opacity: 1, duration: 1.5, ease: "bounce.out"})
-              .fromTo("#c1", {scale: 0, opacity: 0}, {scale: 1, opacity: 1, duration: 0.8}, "-=0.5")
-              .fromTo("#l2", {y: -600, opacity: 0}, {y: 0, opacity: 1, duration: 1.2, ease: "power2.out"}, "-=0.2")
-              .fromTo("#c2", {scale: 0, opacity: 0}, {scale: 1, opacity: 1, duration: 0.8}, "-=0.4")
-              .fromTo("#l3", {y: -400, opacity: 0}, {y: 0, opacity: 1, duration: 1, ease: "power2.out"}, "-=0.2")
-              .to("#candle", {opacity: 1, duration: 1.5, onComplete: startMic});
-
-            gsap.to(hint, {opacity: 1, duration: 2, delay: 5});
+        function init() {
+            document.getElementById('start-btn').style.display = 'none';
+            document.getElementById('mainCard').classList.add('active');
         }
 
-        async function startMic() {
-            try {
-                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                const ctx = new AudioContext();
-                const analyzer = ctx.createAnalyser();
-                const source = ctx.createMediaStreamSource(stream);
-                source.connect(analyzer);
-                
-                const data = new Uint8Array(analyzer.frequencyBinCount);
+        function escape() {
+            const btn = document.getElementById('no');
+            const x = Math.random() * (window.innerWidth - btn.offsetWidth);
+            const y = Math.random() * (window.innerHeight - btn.offsetHeight);
+            btn.style.position = 'fixed';
+            btn.style.left = x + 'px';
+            btn.style.top = y + 'px';
+        }
 
-                function loop() {
-                    analyzer.getByteFrequencyData(data);
-                    let vol = data.reduce((a, b) => a + b) / data.length;
+        function finish() {
+            confetti({
+                particleCount: 200,
+                spread: 100,
+                origin: { y: 0.6 },
+                colors: ['#ffffff', '#ff69b4', '#ff0000']
+            });
 
-                    // Анимация ауры в такт дыханию
-                    gsap.to(aura, { opacity: vol/50, scale: 0.8 + vol/40, duration: 0.1 });
-
-                    // Снизили порог до минимума для комфорта
-                    if (vol > 30) { 
-                        gsap.to([flame, aura], { opacity: 0, duration: 0.5 });
-                        hint.innerText = "Твоё желание обязательно сбудется ✨";
-                        stream.getTracks().forEach(t => t.stop());
-                        return;
-                    }
-                    requestAnimationFrame(loop);
-                }
-                loop();
-            } catch (e) {
-                hint.innerText = "Коснись свечи...";
-                flame.onclick = () => { flame.style.display = 'none'; hint.innerText = "Всё сбудется ✨"; };
-            }
+            document.getElementById('title').innerHTML = "Я тебя люблю!";
+            document.getElementById('content').innerHTML = "<p>Спасибо, что ты у меня есть. Обещаю быть лучше для тебя каждый день!</p>";
+            document.querySelector('.btn-group').style.display = 'none';
         }
     </script>
 </body>
