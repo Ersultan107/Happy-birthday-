@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Для тебя ❤️</title>
+    <title>Для Нуры ❤️</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;600&family=Great+Vibes&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
     
@@ -21,7 +21,7 @@
             color: #4a4a4a;
         }
 
-        /* Анимированный фон с сердечками */
+        /* Сердечки на фоне */
         .heart-bg {
             position: absolute;
             font-size: 20px;
@@ -36,11 +36,11 @@
             100% { transform: translateY(-20vh) rotate(360deg); opacity: 0; }
         }
 
-        /* Кнопка на главном экране */
+        /* Кнопка запуска */
         #start-btn {
             position: relative;
-            z-index: 10;
-            padding: 20px 40px;
+            z-index: 100;
+            padding: 22px 45px;
             background: white;
             color: #ff4d6d;
             border: none;
@@ -48,11 +48,13 @@
             cursor: pointer;
             font-size: 1.1rem;
             font-weight: 600;
-            box-shadow: 0 10px 30px rgba(255, 77, 109, 0.3);
+            box-shadow: 0 10px 30px rgba(255, 77, 109, 0.4);
             transition: 0.3s;
+            text-align: center;
+            max-width: 85%;
         }
 
-        /* Карточка */
+        /* Карточка с письмом */
         .card {
             display: none;
             position: relative;
@@ -75,25 +77,32 @@
 
         h1 {
             font-family: 'Great Vibes', cursive;
-            font-size: 3rem;
+            font-size: 2.8rem;
             color: #ff4d6d;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
 
         p {
-            font-size: 1.05rem;
+            font-size: 1rem;
             line-height: 1.6;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
             color: #555;
+        }
+
+        .from-text {
+            font-family: 'Great Vibes', cursive;
+            font-size: 2.2rem;
+            color: #ff4d6d;
+            margin-top: 20px;
+            display: none;
         }
 
         .btn-container {
             display: flex;
-            flex-direction: row;
             justify-content: center;
             align-items: center;
             gap: 15px;
-            height: 60px;
+            margin-top: 10px;
         }
 
         .btn {
@@ -103,46 +112,35 @@
             font-weight: 600;
             cursor: pointer;
             transition: 0.3s;
-            font-size: 1rem;
         }
 
-        #yes-btn {
-            background: #ff4d6d;
-            color: white;
-            box-shadow: 0 5px 15px rgba(255, 77, 109, 0.4);
-        }
-
-        #no-btn {
-            background: #f0f0f0;
-            color: #888;
-            border: 1px solid #ddd;
-        }
-
-        /* Мобильная адаптация */
-        @media (max-width: 480px) {
-            h1 { font-size: 2.5rem; }
-            .btn { padding: 12px 20px; font-size: 0.9rem; }
-        }
+        #yes-btn { background: #ff4d6d; color: white; box-shadow: 0 5px 15px rgba(255, 77, 109, 0.4); }
+        #no-btn { background: #f0f0f0; color: #888; border: 1px solid #ddd; position: relative; }
     </style>
 </head>
 <body>
 
-    <button id="start-btn" onclick="init()">У меня есть кое-что для тебя...</button>
+    <audio id="bgMusic" loop>
+        <source src="music.mp3" type="audio/mpeg">
+    </audio>
+
+    <button id="start-btn" onclick="init()">Нура, надеюсь тебе это понравится...<br><small>(нажми, чтобы продолжить)</small></button>
 
     <div class="card" id="card">
-        <h1>Прости меня...</h1>
+        <h1 id="greeting">Нура...</h1>
         <div id="content">
-            <p>Я знаю, что был не прав. Иногда я совершаю ошибки, но я очень ценю каждый момент с тобой.</p>
-            <p>Давай забудем всё плохое? ❤️</p>
+            <p>Я знаю, что был не прав и сильно тебя обидел. Мне очень жаль, что я заставил тебя грустить.</p>
+            <p>Ты — самое дорогое, что у меня есть. Давай оставим обиды в прошлом? ❤️</p>
         </div>
         <div class="btn-container">
             <button class="btn" id="yes-btn" onclick="celebrate()">Да</button>
             <button class="btn" id="no-btn" onmouseover="dodge()" onclick="dodge()">Нет</button>
         </div>
+        <div id="signature" class="from-text">Твой Аю</div>
     </div>
 
     <script>
-        // Создание летящих сердечек
+        // Фон с сердечками
         function createHeart() {
             const heart = document.createElement('div');
             heart.classList.add('heart-bg');
@@ -152,14 +150,19 @@
             document.body.appendChild(heart);
             setTimeout(() => heart.remove(), 6000);
         }
-        setInterval(createHeart, 400);
+        setInterval(createHeart, 450);
 
+        // Запуск сайта и музыки
         function init() {
+            const music = document.getElementById('bgMusic');
+            music.play().catch(e => console.log("Ошибка воспроизведения: убедитесь, что файл music.mp3 загружен"));
+            
             document.getElementById('start-btn').style.display = 'none';
             const card = document.getElementById('card');
             card.classList.add('active');
         }
 
+        // Кнопка "Нет" убегает
         function dodge() {
             const btn = document.getElementById('no-btn');
             const x = Math.random() * (window.innerWidth - btn.offsetWidth - 40) + 20;
@@ -169,17 +172,21 @@
             btn.style.top = y + 'px';
         }
 
+        // Финал
         function celebrate() {
             confetti({
-                particleCount: 150,
-                spread: 70,
+                particleCount: 180,
+                spread: 80,
                 origin: { y: 0.6 },
-                colors: ['#ff4d6d', '#ff8fa3', '#ffffff']
+                colors: ['#ff4d6d', '#ffffff', '#ffccd5']
             });
 
-            document.querySelector('h1').innerText = "Я тебя люблю!";
-            document.getElementById('content').innerHTML = "<p>Спасибо за твое терпение и любовь. Ты — моё всё! ❤️</p>";
+            document.getElementById('greeting').innerText = "Я тебя люблю!";
+            document.getElementById('content').innerHTML = "<p>Спасибо, Нура, за твое доброе сердце. Обещаю беречь нас. ❤️</p>";
             document.querySelector('.btn-container').style.display = 'none';
+            const sig = document.getElementById('signature');
+            sig.style.display = 'block';
+            sig.style.animation = 'fadeIn 1s ease forwards';
         }
     </script>
 </body>
