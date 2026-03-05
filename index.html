@@ -5,26 +5,34 @@
     <title>Donate Alert Pro</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800&family=Roboto:wght@400&display=swap" rel="stylesheet">
     <style>
-        body { background: #00ff00; /* Зеленка для OBS */ font-family: 'Montserrat', sans-serif; }
+        /* Я убрал ядовитый зеленый, сделал его более мягким для теста, 
+           но в OBS ты сам выберешь нужный фон */
+        body { background: #00ff00; font-family: 'Montserrat', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
         
         #alert-container {
             display: none;
-            width: 500px;
-            margin: 100px auto;
+            width: 450px;
             text-align: center;
             color: white;
-            text-shadow: 3px 3px 5px rgba(0,0,0,0.8);
+            text-shadow: 4px 4px 10px rgba(0,0,0,0.9);
+            animation: popUp 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        .nickname { font-size: 45px; color: #00f2ff; text-transform: uppercase; margin-bottom: 5px; }
-        .amount { font-size: 30px; color: #fff; margin-bottom: 20px; }
+        @keyframes popUp {
+            from { opacity: 0; transform: scale(0.5); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .nickname { font-size: 50px; color: #00f2ff; text-transform: uppercase; margin: 0; }
+        .amount { font-size: 35px; color: #fff; margin-bottom: 20px; }
         .message { 
             font-family: 'Roboto', sans-serif;
-            font-size: 24px; 
-            background: rgba(0,0,0,0.7); 
-            padding: 15px; 
-            border-radius: 15px; 
-            border-left: 5px solid #00f2ff;
+            font-size: 26px; 
+            background: rgba(0,0,0,0.8); 
+            padding: 20px; 
+            border-radius: 20px; 
+            border: 2px solid #00f2ff;
+            box-shadow: 0 0 20px rgba(0,242,255,0.5);
         }
     </style>
 </head>
@@ -36,8 +44,9 @@
     <div class="message" id="user_msg">Удачи на стриме!</div>
 </div>
 
-<button onclick="simulateDonate('Ерсултан', '500', 'Удачи на стриме!')" style="padding: 10px 20px; cursor: pointer;">
-    Тест: Донат от Ерсултана
+<button onclick="simulateDonate('Ерсултан', '500', 'Удачи на стриме!')" 
+        style="position: absolute; top: 20px; left: 20px; padding: 15px; background: white; border-radius: 10px; border: none; font-weight: bold; cursor: pointer;">
+    ТЕСТ ДОНАТА
 </button>
 
 <script>
@@ -49,28 +58,33 @@
 
         container.style.display = 'block';
 
-        // Формируем фразу для озвучки
-        const textToSay = `${name} скинул ${sum} тенге. ${comment}`;
+        // Вариант для чистого голоса: пишем "тенге" текстом
+        const textToSay = name + " скинул " + sum + " тенге. " + comment;
 
         const synth = window.speechSynthesis;
         const utterance = new SpeechSynthesisUtterance(textToSay);
         
-        // Настройки для более приятного голоса
         utterance.lang = 'ru-RU';
-        utterance.pitch = 0.8; // Чуть ниже тон (более мужской)
-        utterance.rate = 1.0;  // Нормальная скорость
-        utterance.volume = 1;
+        utterance.pitch = 0.9; 
+        utterance.rate = 1.0; 
 
-        // Важно: Найти в системе мужской голос, если он есть
+        // Ищем голос Google (он самый нормальный на Android и в Chrome)
         const voices = synth.getVoices();
-        const maleVoice = voices.find(v => v.name.includes('Pavel') || v.name.includes('Microsoft Dmitry'));
-        if (maleVoice) utterance.voice = maleVoice;
+        const googleVoice = voices.find(v => v.name.includes('Google') && v.lang.includes('ru'));
+        
+        if (googleVoice) {
+            utterance.voice = googleVoice;
+        }
 
+        // Чтобы не было глюков на Android, сначала отменяем старую речь
+        synth.cancel();
         synth.speak(utterance);
 
-        // Убираем через 7 секунд
-        setTimeout(() => { container.style.display = 'none'; }, 7000);
+        setTimeout(() => { container.style.display = 'none'; }, 8000);
     }
+
+    // Предзагрузка голосов для браузера
+    window.speechSynthesis.getVoices();
 </script>
 </body>
 </html>
