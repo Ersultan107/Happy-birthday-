@@ -2,203 +2,50 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Для Нуры. От Аю.</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;600&family=Great+Vibes&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
-    
+    <title>Widget Alert</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-
-        body {
-            background: radial-gradient(ellipse at bottom, #1B2735 0%, #090A0F 100%);
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-family: 'Montserrat', sans-serif;
-            overflow: hidden;
-            color: #fff;
-        }
-
-        /* Звездное небо и метеоры */
-        .stars-container {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            z-index: 1;
-        }
-
-        .star {
-            position: absolute;
-            background: white;
-            border-radius: 50%;
-            opacity: 0.5;
-            animation: twinkle var(--duration) infinite;
-        }
-
-        @keyframes twinkle { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
-
-        .meteor {
-            position: absolute;
-            width: 2px;
-            height: 2px;
-            background: linear-gradient(to right, rgba(255,255,255,0), rgba(255,255,255,1));
-            animation: meteor linear infinite;
-        }
-
-        @keyframes meteor {
-            0% { transform: translateX(0) translateY(0) rotate(-45deg); opacity: 1; }
-            70% { opacity: 1; }
-            100% { transform: translateX(-500px) translateY(500px) rotate(-45deg); opacity: 0; }
-        }
-
-        .moon {
-            position: absolute;
-            top: 10%;
-            right: 15%;
-            width: 80px;
-            height: 80px;
-            background: #fdfae5;
-            border-radius: 50%;
-            box-shadow: 0 0 40px #fdfae5;
-            z-index: 2;
-        }
-
-        /* Контент */
-        .container {
-            position: relative;
-            z-index: 10;
-            width: 90%;
-            max-width: 450px;
-            text-align: center;
-        }
-
-        .card {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 30px;
-            padding: 40px 25px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        body { background: transparent; font-family: sans-serif; overflow: hidden; }
+        #alert-box {
             display: none;
-            animation: slideIn 1s ease forwards;
+            width: 400px;
+            text-align: center;
+            margin: 50px auto;
+            animation: fadeInDown 0.5s;
         }
-
-        @keyframes slideIn { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-
-        #start-screen { display: block; }
-
-        h1 { font-family: 'Great Vibes', cursive; font-size: 3.2rem; margin-bottom: 20px; color: #ff8fa3; }
-        p { font-size: 1.1rem; line-height: 1.8; margin-bottom: 25px; font-weight: 300; }
-
-        .btn {
-            padding: 15px 35px;
-            border-radius: 50px;
-            border: none;
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.3s;
-            font-size: 1rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .btn-main { background: #ff4d6d; color: white; box-shadow: 0 5px 20px rgba(255, 77, 109, 0.4); }
-        .btn-next { background: rgba(255,255,255,0.1); color: white; border: 1px solid white; margin-top: 10px; }
-
-        .no-btn { background: #444; color: #bbb; position: relative; }
-
-        .signature { font-family: 'Great Vibes', cursive; font-size: 2.5rem; margin-top: 20px; color: #ff8fa3; }
+        .nickname { color: #ffcc00; font-size: 32px; font-weight: bold; text-shadow: 2px 2px #000; }
+        .amount { color: #fff; font-size: 24px; text-shadow: 1px 1px #000; }
+        .message { color: #fff; font-size: 20px; background: rgba(0,0,0,0.6); padding: 10px; border-radius: 10px; margin-top: 10px; }
+        @keyframes fadeInDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
-    <audio id="bgMusic" loop>
-        <source src="music.mp3" type="audio/mpeg">
-    </audio>
+<div id="alert-box">
+    <div class="nickname" id="user">Иван</div>
+    <div class="amount" id="sum">500 ₸</div>
+    <div class="message" id="msg">Удачи на стриме!</div>
+</div>
 
-    <div class="stars-container" id="stars"></div>
-    <div class="moon"></div>
+<button onclick="testAlert()" style="position:fixed; bottom:10px; right:10px;">Тест Доната</button>
 
-    <div class="container">
-        <div id="start-screen" class="card" style="display: block;">
-            <h1>Нура...</h1>
-            <p>Я подготовил для тебя кое-что под ночным небом. Ты готова послушать меня?</p>
-            <button class="btn btn-main" onclick="showStep(1)">Открыть письмо</button>
-        </div>
+<script>
+    function testAlert() {
+        const alertBox = document.getElementById('alert-box');
+        const text = "Иван задонатил 500 тенге. Сообщение: Удачи на стриме!";
+        
+        // 1. Показываем визуально
+        alertBox.style.display = 'block';
 
-        <div id="step1" class="card">
-            <p>Иногда слова застревают в горле, и я не могу сказать, как много ты для меня значишь. В ту ночь, когда мы поссорились, звезды в моем мире погасли.</p>
-            <button class="btn btn-next" onclick="showStep(2)">Читать дальше...</button>
-        </div>
+        // 2. Озвучка
+        const speech = new SpeechSynthesisUtterance(text);
+        speech.lang = 'ru-RU';
+        speech.rate = 0.9; // Скорость чуть медленнее
+        
+        window.speechSynthesis.speak(speech);
 
-        <div id="step2" class="card">
-            <p>Я знаю, что был не прав. Прости меня за мою глупость и обидные слова. Ты — единственная, кто освещает мой путь, как эта луна.</p>
-            <button class="btn btn-next" onclick="showStep(3)">И еще кое-что...</button>
-        </div>
-
-        <div id="step3" class="card">
-            <h1>Нура, простишь меня?</h1>
-            <p>Я обещаю беречь нашу любовь и никогда не давать тебе повода для слез.</p>
-            <div style="display: flex; gap: 10px; justify-content: center;">
-                <button class="btn btn-main" onclick="finish()">Да</button>
-                <button class="btn no-btn" id="no-btn" onmouseover="dodge()">Нет</button>
-            </div>
-        </div>
-
-        <div id="final" class="card">
-            <h1>Я люблю тебя!</h1>
-            <p>Спасибо за твое прощение. Теперь в моем небе снова горят звезды.</p>
-            <div class="signature">Твой Аю</div>
-        </div>
-    </div>
-
-    <script>
-        // Создание звезд
-        const starsBox = document.getElementById('stars');
-        for (let i = 0; i < 150; i++) {
-            let star = document.createElement('div');
-            star.className = 'star';
-            star.style.left = Math.random() * 100 + '%';
-            star.style.top = Math.random() * 100 + '%';
-            star.style.width = star.style.height = Math.random() * 3 + 'px';
-            star.style.setProperty('--duration', Math.random() * 3 + 2 + 's');
-            starsBox.appendChild(star);
-        }
-
-        // Создание метеоров
-        setInterval(() => {
-            let m = document.createElement('div');
-            m.className = 'meteor';
-            m.style.left = Math.random() * 100 + '%';
-            m.style.top = '0';
-            m.style.animationDuration = Math.random() * 2 + 1 + 's';
-            starsBox.appendChild(m);
-            setTimeout(() => m.remove(), 3000);
-        }, 2000);
-
-        function showStep(num) {
-            if(num === 1) document.getElementById('bgMusic').play();
-            
-            document.querySelectorAll('.card').forEach(c => c.style.display = 'none');
-            document.getElementById('step' + num).style.display = 'block';
-        }
-
-        function dodge() {
-            const btn = document.getElementById('no-btn');
-            btn.style.position = 'fixed';
-            btn.style.left = Math.random() * (window.innerWidth - 100) + 'px';
-            btn.style.top = Math.random() * (window.innerHeight - 50) + 'px';
-        }
-
-        function finish() {
-            confetti({ particleCount: 200, spread: 70, origin: { y: 0.6 } });
-            document.querySelectorAll('.card').forEach(c => c.style.display = 'none');
-            document.getElementById('final').style.display = 'block';
-        }
-    </script>
+        // 3. Прячем через 5 секунд
+        setTimeout(() => { alertBox.style.display = 'none'; }, 6000);
+    }
+</script>
 </body>
 </html>
