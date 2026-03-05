@@ -2,49 +2,74 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Widget Alert</title>
+    <title>Donate Alert Pro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800&family=Roboto:wght@400&display=swap" rel="stylesheet">
     <style>
-        body { background: transparent; font-family: sans-serif; overflow: hidden; }
-        #alert-box {
+        body { background: #00ff00; /* Зеленка для OBS */ font-family: 'Montserrat', sans-serif; }
+        
+        #alert-container {
             display: none;
-            width: 400px;
+            width: 500px;
+            margin: 100px auto;
             text-align: center;
-            margin: 50px auto;
-            animation: fadeInDown 0.5s;
+            color: white;
+            text-shadow: 3px 3px 5px rgba(0,0,0,0.8);
         }
-        .nickname { color: #ffcc00; font-size: 32px; font-weight: bold; text-shadow: 2px 2px #000; }
-        .amount { color: #fff; font-size: 24px; text-shadow: 1px 1px #000; }
-        .message { color: #fff; font-size: 20px; background: rgba(0,0,0,0.6); padding: 10px; border-radius: 10px; margin-top: 10px; }
-        @keyframes fadeInDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+
+        .nickname { font-size: 45px; color: #00f2ff; text-transform: uppercase; margin-bottom: 5px; }
+        .amount { font-size: 30px; color: #fff; margin-bottom: 20px; }
+        .message { 
+            font-family: 'Roboto', sans-serif;
+            font-size: 24px; 
+            background: rgba(0,0,0,0.7); 
+            padding: 15px; 
+            border-radius: 15px; 
+            border-left: 5px solid #00f2ff;
+        }
     </style>
 </head>
 <body>
 
-<div id="alert-box">
-    <div class="nickname" id="user">Иван</div>
-    <div class="amount" id="sum">500 ₸</div>
-    <div class="message" id="msg">Удачи на стриме!</div>
+<div id="alert-container">
+    <div class="nickname" id="user_name">Ерсултан</div>
+    <div class="amount" id="user_amount">500 ₸</div>
+    <div class="message" id="user_msg">Удачи на стриме!</div>
 </div>
 
-<button onclick="testAlert()" style="position:fixed; bottom:10px; right:10px;">Тест Доната</button>
+<button onclick="simulateDonate('Ерсултан', '500', 'Удачи на стриме!')" style="padding: 10px 20px; cursor: pointer;">
+    Тест: Донат от Ерсултана
+</button>
 
 <script>
-    function testAlert() {
-        const alertBox = document.getElementById('alert-box');
-        const text = "Иван задонатил 500 тенге. Сообщение: Удачи на стриме!";
-        
-        // 1. Показываем визуально
-        alertBox.style.display = 'block';
+    function simulateDonate(name, sum, comment) {
+        const container = document.getElementById('alert-container');
+        document.getElementById('user_name').innerText = name;
+        document.getElementById('user_amount').innerText = sum + " ₸";
+        document.getElementById('user_msg').innerText = comment;
 
-        // 2. Озвучка
-        const speech = new SpeechSynthesisUtterance(text);
-        speech.lang = 'ru-RU';
-        speech.rate = 0.9; // Скорость чуть медленнее
-        
-        window.speechSynthesis.speak(speech);
+        container.style.display = 'block';
 
-        // 3. Прячем через 5 секунд
-        setTimeout(() => { alertBox.style.display = 'none'; }, 6000);
+        // Формируем фразу для озвучки
+        const textToSay = `${name} скинул ${sum} тенге. ${comment}`;
+
+        const synth = window.speechSynthesis;
+        const utterance = new SpeechSynthesisUtterance(textToSay);
+        
+        // Настройки для более приятного голоса
+        utterance.lang = 'ru-RU';
+        utterance.pitch = 0.8; // Чуть ниже тон (более мужской)
+        utterance.rate = 1.0;  // Нормальная скорость
+        utterance.volume = 1;
+
+        // Важно: Найти в системе мужской голос, если он есть
+        const voices = synth.getVoices();
+        const maleVoice = voices.find(v => v.name.includes('Pavel') || v.name.includes('Microsoft Dmitry'));
+        if (maleVoice) utterance.voice = maleVoice;
+
+        synth.speak(utterance);
+
+        // Убираем через 7 секунд
+        setTimeout(() => { container.style.display = 'none'; }, 7000);
     }
 </script>
 </body>
