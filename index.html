@@ -3,234 +3,121 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Талғат & Әсел | Үйлену тойы</title>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,600;1,400&family=Montserrat:wght@300;400&display=swap" rel="stylesheet">
+    <title>Талғат & Әсел | Тойға шақыру</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Cormorant+Garamond:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --gold: #b8924e;
-            --beige: #f9f6f0;
-            --dark: #2c2c2c;
-            --shadow: rgba(184, 146, 78, 0.2);
-        }
+        :root { --gold: #b8924e; --beige: #fdfaf5; --dark: #3a3a3a; }
+        body, html { margin: 0; padding: 0; font-family: 'Cormorant Garamond', serif; background-color: var(--beige); color: var(--dark); overflow-x: hidden; }
 
-        body, html {
-            margin: 0; padding: 0;
-            font-family: 'Cormorant Garamond', serif;
-            background-color: var(--beige);
-            color: var(--dark);
-            overflow-x: hidden;
-        }
+        /* ЭСТЕТИКАЛЫҚ ФОН */
+        .bg-elements { position: fixed; width: 100%; height: 100%; z-index: -1; pointer-events: none; opacity: 0.6; }
 
         /* КІРУ ЭКРАНЫ */
-        #welcome-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: var(--beige);
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            z-index: 1000; transition: 1.2s cubic-bezier(0.4, 0, 0.2, 1);
-            background-image: url('https://www.transparenttextures.com/patterns/cream-paper.png');
-        }
-
-        .login-card {
-            text-align: center; padding: 40px; width: 85%; max-width: 400px;
-            background: white; border-radius: 30px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.05);
-            border: 1px solid #eaddca;
-        }
-
-        .login-card h2 { font-family: 'Playfair Display', serif; color: var(--gold); font-size: 2rem; margin-bottom: 25px; }
-
-        input {
-            width: 100%; padding: 15px; margin: 10px 0;
-            border: 1px solid #eaddca; border-radius: 12px;
-            font-family: 'Montserrat', sans-serif; outline: none;
-            box-sizing: border-box; text-align: center;
-        }
+        #welcome-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--beige); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 1000; transition: 1.5s; }
+        .login-card { text-align: center; padding: 40px; width: 85%; max-width: 400px; background: rgba(255,255,255,0.9); border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); border: 1px solid #eaddca; }
+        input { width: 100%; padding: 15px; margin: 10px 0; border: 1px solid #eaddca; border-radius: 10px; font-family: inherit; outline: none; box-sizing: border-box; text-align: center; font-size: 1.1rem; }
+        .btn-main { background: var(--gold); color: white; padding: 15px 40px; border: none; border-radius: 30px; cursor: pointer; font-weight: bold; width: 100%; margin-top: 20px; letter-spacing: 1px; }
 
         /* КОНВЕРТ */
-        #envelope-container { display: none; text-align: center; cursor: pointer; }
-        .envelope {
-            width: 300px; height: 200px; background: #f3e5d0;
-            position: relative; margin: 0 auto;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.1);
-            border-radius: 5px;
-        }
-        .envelope::before {
-            content: ''; position: absolute; top: 0; left: 0;
-            width: 0; height: 0; border-left: 150px solid transparent;
-            border-right: 150px solid transparent; border-top: 120px solid #e6d5bc;
-            transition: 1.2s ease; z-index: 2; transform-origin: top;
-        }
+        #envelope-container { display: none; text-align: center; cursor: pointer; animation: fadeIn 1s; }
+        .envelope { width: 280px; height: 180px; background: #f3e5d0; position: relative; margin: 0 auto; box-shadow: 0 15px 35px rgba(0,0,0,0.1); border-radius: 5px; }
+        .envelope::before { content: ''; position: absolute; top: 0; left: 0; width: 0; height: 0; border-left: 140px solid transparent; border-right: 140px solid transparent; border-top: 100px solid #e6d5bc; transition: 1.2s; z-index: 2; transform-origin: top; }
         .envelope.open::before { transform: rotateX(180deg); }
-        .seal {
-            position: absolute; top: 90px; left: 50%; transform: translateX(-50%);
-            width: 55px; height: 55px; background: #a52a2a;
-            border-radius: 50%; z-index: 5; border: 3px solid #800000;
-            color: white; display: flex; align-items: center; justify-content: center;
-            font-family: 'Playfair Display', serif; font-weight: bold;
-        }
+        .seal { position: absolute; top: 70px; left: 50%; transform: translateX(-50%); width: 50px; height: 50px; background: #9e1c22; border-radius: 50%; z-index: 3; display: flex; align-items: center; justify-content: center; color: white; font-family: 'Playfair Display'; font-weight: bold; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
 
-        /* НЕГІЗГІ САЙТ */
-        #main-site { display: none; opacity: 0; transition: 2s; text-align: center; }
+        /* САЙТ ДИЗАЙНЫ */
+        #main-site { display: none; opacity: 0; transition: 2s; text-align: center; padding-bottom: 50px; }
+        .hero { padding: 80px 20px; position: relative; }
+        .logo-da { font-family: 'Playfair Display', serif; font-size: 6rem; color: var(--gold); margin: 20px 0; line-height: 1; opacity: 0.8; }
+        .title { font-size: 1.2rem; letter-spacing: 5px; text-transform: uppercase; color: var(--gold); margin-bottom: 40px; }
+        .guest-welcome { font-size: 2.2rem; font-family: 'Playfair Display'; margin: 20px 0; }
+        
+        .info-card { background: white; margin: 40px auto; padding: 40px 20px; width: 85%; max-width: 500px; border-radius: 30px; box-shadow: 0 10px 40px rgba(0,0,0,0.03); border: 1px solid rgba(184, 146, 78, 0.15); }
+        .date { font-size: 2.5rem; color: var(--gold); font-family: 'Playfair Display'; }
+        .timer { display: flex; justify-content: center; gap: 15px; margin: 30px 0; }
+        .timer-item { background: var(--beige); padding: 15px; border-radius: 12px; min-width: 60px; border: 1px solid #eee; }
+        .timer-item span { display: block; font-size: 1.5rem; font-weight: bold; color: var(--gold); }
 
-        header {
-            height: 100vh; display: flex; flex-direction: column; justify-content: center;
-            background: linear-gradient(rgba(255,255,255,0.7), rgba(255,255,255,0.7)), 
-                        url('https://img.freepik.com/free-photo/dried-flowers-background-aesthetic-flower-border_53876-132791.jpg');
-            background-size: cover; background-position: center;
-        }
+        .btn-2gis { background: #27ae60; color: white; padding: 12px 25px; text-decoration: none; border-radius: 50px; display: inline-block; margin-top: 20px; font-size: 0.9rem; }
+        .rsvp-section { margin-top: 60px; padding: 0 20px; }
+        .rsvp-btn { background: white; color: var(--gold); border: 2px solid var(--gold); padding: 15px 40px; border-radius: 50px; font-weight: bold; margin: 10px; width: 250px; cursor: pointer; transition: 0.3s; }
+        .rsvp-btn.active { background: var(--gold); color: white; }
 
-        .initials { font-family: 'Playfair Display', serif; font-size: 5.5rem; color: var(--gold); margin: 0; }
-        .hero-text { font-size: 1.5rem; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 20px; }
-
-        section { padding: 80px 20px; max-width: 800px; margin: 0 auto; }
-
-        .about-text { font-size: 1.4rem; line-height: 1.8; color: #555; font-style: italic; }
-
-        /* ТАЙМЕР */
-        .timer { display: flex; justify-content: center; gap: 15px; margin: 40px 0; }
-        .timer-item {
-            background: white; padding: 20px; border-radius: 15px;
-            min-width: 70px; box-shadow: 0 10px 30px rgba(0,0,0,0.03);
-            border: 1px solid var(--gold);
-        }
-        .timer-item span { display: block; font-size: 2rem; font-weight: bold; color: var(--gold); }
-
-        /* ТАЙМИНГ */
-        .timing-box {
-            display: flex; flex-direction: column; align-items: center; gap: 30px;
-            background: white; padding: 40px; border-radius: 40px;
-            box-shadow: 0 15px 50px rgba(0,0,0,0.05);
-        }
-        .timing-item { position: relative; padding-left: 30px; }
-        .timing-item h4 { margin: 5px 0; font-size: 1.6rem; color: var(--gold); }
-
-        .location-btn {
-            background: #27ae60; color: white; padding: 18px 35px;
-            text-decoration: none; border-radius: 50px; display: inline-block;
-            margin-top: 25px; font-weight: bold; font-family: 'Montserrat', sans-serif;
-        }
-
-        .rsvp-card {
-            background: var(--gold); color: white; padding: 50px 30px;
-            border-radius: 40px; margin: 50px 0;
-        }
-        .rsvp-btn {
-            background: white; color: var(--gold); border: none;
-            padding: 15px 40px; border-radius: 50px; font-weight: bold;
-            margin: 10px; cursor: pointer; font-size: 1rem;
-        }
-
-        footer { padding: 40px; font-size: 0.9rem; letter-spacing: 2px; color: #999; }
-
+        @keyframes fadeIn { from {opacity: 0;} to {opacity: 1;} }
     </style>
 </head>
 <body>
 
     <div id="welcome-overlay">
         <div class="login-card" id="login-box">
-            <h2>Тойға шақыру</h2>
+            <h2 style="font-family: 'Playfair Display'; color: var(--gold);">Тойға шақыру</h2>
             <p>Құрметті қонақ, есіміңізді жазыңыз:</p>
-            <input type="text" id="guest-input" placeholder="Сіздің есіміңіз">
-            <input type="text" id="partner-input" placeholder="Жұбыңыздың есімі">
-            <button class="location-btn" style="background: var(--gold); width:100%" onclick="showEnvelope()">Кіру</button>
+            <input type="text" id="g-name" placeholder="Есіміңіз" required>
+            <input type="text" id="p-name" placeholder="Жұбыңыздың есімі (болса)">
+            <button class="btn-main" onclick="toEnvelope()">Кіру</button>
         </div>
 
-        <div id="envelope-container" onclick="openEnvelope()">
-            <div class="envelope" id="env">
-                <div class="seal">T&A</div>
-            </div>
-            <p style="margin-top: 30px; font-style: italic; color: var(--gold);">Ашу үшін басыңыз</p>
+        <div id="envelope-container" onclick="openEnv()">
+            <div class="envelope" id="env-ui"><div class="seal">DA</div></div>
+            <p style="margin-top: 30px; font-style: italic; color: var(--gold); letter-spacing: 2px;">Ашу үшін басыңыз</p>
         </div>
     </div>
 
     <div id="main-site">
-        <header>
-            <p class="hero-text">Шақыру хат</p>
-            <h1 class="initials">Т & Ә</h1>
-            <h2 id="guest-name-display" style="font-family: 'Playfair Display';">Құрметті қонақтар!</h2>
-        </header>
-
-        <section>
-            <p class="about-text">
-                Өмірдің жаңа парағын бірге бастауға бел будық. Осы бір ерекше сәтте біздің қуанышымызға ортақ болып, ақ батаңызды беруге шақырамыз!
-            </p>
+        <section class="hero">
+            <div class="title">Тойға шақыру</div>
+            <div class="logo-da">DA</div>
+            <div class="guest-welcome" id="display-name">Құрметті қонақ!</div>
+            <p style="max-width: 300px; margin: 0 auto; line-height: 1.6; font-size: 1.2rem;">Біздің қуанышымызға ортақ болуға шақырамыз</p>
             
             <div class="timer">
-                <div class="timer-item"><span id="days">00</span>Күн</div>
-                <div class="timer-item"><span id="hours">00</span>Сағ</div>
-                <div class="timer-item"><span id="mins">00</span>Мин</div>
-                <div class="timer-item"><span id="secs">00</span>Сек</div>
+                <div class="timer-item"><span id="d">00</span>күн</div>
+                <div class="timer-item"><span id="h">00</span>сағ</div>
+                <div class="timer-item"><span id="m">00</span>мин</div>
+                <div class="timer-item"><span id="s">00</span>сек</div>
             </div>
         </section>
 
-        <section style="background: #fff; border-radius: 50px 50px 0 0;">
-            <h2 style="font-size: 2.5rem; color: var(--gold);">Той Бағдарламасы</h2>
-            <div class="timing-box">
-                <div class="timing-item">
-                    <span>18:00</span>
-                    <h4>Қонақтардың жиналуы</h4>
-                    <p>Welcome drink және фотосессия</p>
-                </div>
-                <div class="timing-item">
-                    <span>19:00</span>
-                    <h4>Салтанатты ашылу</h4>
-                    <p>Тойдың басталуы</p>
-                </div>
-                <div class="timing-item">
-                    <span>20:30</span>
-                    <h4>Неке қию рәсімі</h4>
-                    <p>Ақ тілектер мен бата</p>
-                </div>
-            </div>
-        </section>
+        <div class="info-card">
+            <div class="date">14 СӘУІР | 2026</div>
+            <p style="letter-spacing: 2px;">СЕНБІ, 18:00</p>
+            <hr style="width: 30%; border: 0.5px solid #eaddca; margin: 25px auto;">
+            <p style="font-size: 1.3rem;"><strong>"Алтын Орда" Мейрамханасы</strong></p>
+            <p style="color: #777;">Алматы қаласы, Абай даңғылы, 123</p>
+            <a href="https://2gis.kz/almaty" target="_blank" class="btn-2gis">📍 2GIS картада ашу</a>
+        </div>
 
-        <section>
-            <h2 style="font-size: 2.5rem; color: var(--gold);">Мекен-жайымыз</h2>
-            <div style="background: white; padding: 40px; border-radius: 30px; border: 1px solid var(--gold);">
-                <h3 style="font-size: 2rem;">"Алтын Орда" Мейрамханасы</h3>
-                <p>Алматы қаласы, Абай даңғылы, 123</p>
-                <a href="https://2gis.kz/almaty" target="_blank" class="location-btn">📍 2GIS арқылы бару</a>
-            </div>
-        </section>
-
-        <section class="rsvp-card">
-            <h2>Сіз келесіз бе?</h2>
+        <section class="rsvp-section">
+            <h2 style="font-family: 'Playfair Display'; color: var(--gold);">Сіз келесіз бе?</h2>
             <p>Жауабыңызды 1 сәуірге дейін күтеміз</p>
-            <div>
-                <button class="rsvp-btn" onclick="sendRSVP('Иә, келемін!')">Иә, келемін!</button>
-                <button class="rsvp-btn" style="background: transparent; border: 2px solid white; color: white;" onclick="sendRSVP('Келе алмаймын')">Келе алмаймын</button>
-            </div>
+            <button class="rsvp-btn" onclick="send(this, 'Иә, келемін!')">Иә, әрине келемін!</button><br>
+            <button class="rsvp-btn" style="border-color: #ccc; color: #999;" onclick="send(this, 'Келе алмаймын')">Өкінішке орай, жоқ</button>
         </section>
 
-        <footer>
+        <footer style="margin-top: 80px; font-size: 0.8rem; letter-spacing: 3px; color: #ccc;">
             TALGAT & ASSEL — 2026
         </footer>
     </div>
 
-    <audio id="bg-music" loop>
-        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" type="audio/mpeg">
+    <audio id="music" loop>
+        <source src="https://dl.dropboxusercontent.com/s/f48y0i56p05k5x8/miyagi_minor_lofi.mp3" type="audio/mpeg">
     </audio>
 
     <script>
-        const BOT_TOKEN = '8748131503:AAEuP-1Yx6RIY_bTI4K5cZI9Qntm1CMnzgk';
-        const CHAT_ID = '1556694618';
+        const TOKEN = '8748131503:AAEuP-1Yx6RIY_bTI4K5cZI9Qntm1CMnzgk';
+        const ID = '1556694618';
 
-        let guest = "";
-        let partner = "";
-
-        function showEnvelope() {
-            guest = document.getElementById('guest-input').value;
-            partner = document.getElementById('partner-input').value || "Жалғыз";
-            if(!guest) return alert("Есіміңізді жазыңыз");
-
+        function toEnvelope() {
+            const n = document.getElementById('g-name').value;
+            if(!n) return alert("Есіміңізді жазыңыз");
             document.getElementById('login-box').style.display = 'none';
             document.getElementById('envelope-container').style.display = 'block';
-            document.getElementById('guest-name-display').innerText = `Құрметті, ${guest}!`;
+            document.getElementById('display-name').innerText = `Құрметті, ${n}!`;
         }
 
-        function openEnvelope() {
-            document.getElementById('bg-music').play();
-            document.getElementById('env').classList.add('open');
+        function openEnv() {
+            document.getElementById('music').play();
+            document.getElementById('env-ui').classList.add('open');
             setTimeout(() => {
                 document.getElementById('welcome-overlay').style.opacity = '0';
                 setTimeout(() => {
@@ -246,21 +133,24 @@
         setInterval(() => {
             const now = new Date().getTime();
             const diff = target - now;
-            document.getElementById('days').innerText = Math.floor(diff / (1000*60*60*24));
-            document.getElementById('hours').innerText = Math.floor((diff % (1000*60*60*24)) / (1000*60*60));
-            document.getElementById('mins').innerText = Math.floor((diff % (1000*60*60)) / (1000*60));
-            document.getElementById('secs').innerText = Math.floor((diff % (1000*60)) / 1000);
+            document.getElementById('d').innerText = Math.floor(diff / (1000*60*60*24));
+            document.getElementById('h').innerText = Math.floor((diff % (1000*60*60*24)) / (1000*60*60));
+            document.getElementById('m').innerText = Math.floor((diff % (1000*60*60)) / (1000*60));
+            document.getElementById('s').innerText = Math.floor((diff % (1000*60)) / 1000);
         }, 1000);
 
-        async function sendRSVP(answer) {
-            const text = `🔔 *ЖАҢА ЖАУАП!*\n\n👤 *Қонақ:* ${guest}\n👫 *Жұбы:* ${partner}\n📍 *Жауабы:* ${answer}`;
-            const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${encodeURIComponent(text)}&parse_mode=Markdown`;
+        async function send(btn, ans) {
+            btn.classList.add('active');
+            const guest = document.getElementById('g-name').value;
+            const partner = document.getElementById('p-name').value || "Жалғыз";
+            const msg = `🤵👰 *ЖАҢА ЖАУАП!*\n\n👤 Қонақ: ${guest}\n👫 Жұбы: ${partner}\n📍 Жауап: ${ans}`;
             
             try {
-                const res = await fetch(url);
-                if(res.ok) alert("Рақмет! Жауабыңыз жіберілді.");
-                else alert("Қате! Ботты іске қосып көріңіз.");
-            } catch(e) { alert("Желі қатесі."); }
+                await fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage?chat_id=${ID}&text=${encodeURIComponent(msg)}&parse_mode=Markdown`);
+                alert("Рақмет! Жауабыңыз жіберілді.");
+            } catch(e) {
+                alert("Қате! Ботты іске қосып көріңіз.");
+            }
         }
     </script>
 </body>
